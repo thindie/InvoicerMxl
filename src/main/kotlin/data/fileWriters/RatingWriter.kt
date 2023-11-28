@@ -1,9 +1,7 @@
 package data.fileWriters
 
 
-import domain.GoodParserRepository
 import domain.entities.Good
-import domain.entities.abstractions.ResultRatingWriter
 import java.io.File
 import java.io.IOException
 import java.nio.charset.Charset
@@ -55,7 +53,6 @@ class RatingWriter(private val allIncomingGoodslist: List<Good>, private val fil
 
     private val createSkeletonOfFile: () -> String = {
         val resource = resourcesDir.resolve(DLL)
-        //RatingWriter::class.java.classLoader.getResource(DLL)
         Files.readString(
             Paths.get(
                 resource.toURI() ?: throw NullPointerException()
@@ -116,12 +113,6 @@ class RatingWriter(private val allIncomingGoodslist: List<Good>, private val fil
         }
         listToReturn.addAll(list.subList(firstIndex, secondIndex))
         return listToReturn.toList()
-    }
-
-    companion object {
-        fun inject(fileName: String, goodParserRepository: GoodParserRepository, list: List<Good>) {
-            goodParserRepository.writeFileRating = RatingWriter(list, fileName)
-        }
     }
 }
 

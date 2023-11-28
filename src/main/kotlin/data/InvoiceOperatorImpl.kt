@@ -2,7 +2,8 @@ package data
 
 import data.fileReaders.RatingsGetter
 import data.fileWriters.RatingWriter
-import domain.GoodParserRepository
+import data.util.DispatcherProvider
+import domain.InvoiceOperator
 import domain.entities.CentralBaseGoodsVolume
 import domain.entities.Good
 import domain.entities.LocalBaseGoodsVolume
@@ -11,16 +12,15 @@ import domain.entities.abstractions.RawRatingReader
 import domain.entities.abstractions.ResultRatingWriter
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.flow
+import javax.inject.Inject
 
 
-object GoodParserRepositoryImpl : GoodParserRepository {
-    override lateinit var parseFileRating: RawRatingReader
-    override lateinit var writeFileRating: ResultRatingWriter
+class InvoiceOperatorImpl @Inject constructor(private val dispatcherProvider: DispatcherProvider) : InvoiceOperator {
+     lateinit var parseFileRating: RawRatingReader
+     lateinit var writeFileRating: ResultRatingWriter
 
 
     override suspend fun getAllGoods(fileName: String): Flow<List<Good>> {
-        RatingsGetter.inject(fileName, this)
-
         return flow { emit(parseFileRating.read()) }
     }
 

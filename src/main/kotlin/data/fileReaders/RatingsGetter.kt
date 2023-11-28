@@ -1,6 +1,6 @@
 package data.fileReaders;
 
-import domain.GoodParserRepository
+import domain.InvoiceOperator
 import domain.entities.Good
 import domain.entities.abstractions.RawRatingReader
 import java.io.IOException
@@ -14,12 +14,13 @@ import java.util.*
 class RatingsGetter(private val fileNameIncoming: String) : RawRatingReader() {
 
     private fun fromFile(fileName: String): List<String> {
-        try {
+        return try {
             return Files.readAllLines(Path.of(fileName), Charset.forName("Windows-1251"))
         } catch (e: IOException) {
             e.printStackTrace()
+            emptyList()
         }
-        return emptyList()
+
     }
 
 
@@ -53,9 +54,4 @@ class RatingsGetter(private val fileNameIncoming: String) : RawRatingReader() {
         return result
     }
 
-    companion object {
-        fun inject(fileName: String, goodParserRepository: GoodParserRepository) {
-            goodParserRepository.parseFileRating = RatingsGetter(fileName)
-        }
-    }
 }

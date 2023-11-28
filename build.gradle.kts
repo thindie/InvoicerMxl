@@ -3,6 +3,7 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
     kotlin("jvm") version "1.8.0"
+    kotlin("kapt") version "1.8.0"
     id("org.jetbrains.compose") version "1.3.0"
 }
 
@@ -16,8 +17,10 @@ repositories {
 }
 
 dependencies {
+    val daggerVersion = "2.45"
     implementation(compose.desktop.currentOs)
-
+    implementation("com.google.dagger:dagger:$daggerVersion")
+    kapt("com.google.dagger:dagger-compiler:$daggerVersion")
 }
 
 tasks.withType<KotlinCompile> {
