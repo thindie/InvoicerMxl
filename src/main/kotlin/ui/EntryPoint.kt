@@ -1,6 +1,7 @@
 package ui
 
 import TITLE
+import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
@@ -11,6 +12,7 @@ import androidx.compose.ui.window.rememberWindowState
 import data.util.SystemPropertyPathProvider
 import di.AppComponent
 import ui.main.MainScreen
+import ui.main.state.rememberMainScreenState
 import javax.inject.Inject
 import javax.inject.Named
 import javax.swing.JFileChooser
@@ -35,14 +37,19 @@ class EntryPoint private constructor() {
 
 
     private fun start() = application {
-        Window(
-            icon = rememberVectorPainter(Icons.Default.List),
-            state = rememberWindowState(width = 700.dp, height = 300.dp),
-            resizable = true,
-            title = TITLE,
-            onCloseRequest = ::exitApplication
-        ) {
-            MainScreen(viewModel, fileChooser, pathProvider)
+        MaterialTheme {
+            Window(
+                icon = rememberVectorPainter(Icons.Default.List),
+                state = rememberWindowState(width = 700.dp, height = 300.dp),
+                resizable = true,
+                title = TITLE,
+                onCloseRequest = ::exitApplication
+            ) {
+                MainScreen(
+                    viewModel = viewModel,
+                    state = rememberMainScreenState(fileChooser, pathProvider, isSaveJChooser = false)
+                )
+            }
         }
     }
 

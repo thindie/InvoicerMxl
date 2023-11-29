@@ -12,33 +12,28 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import data.util.SystemPropertyPathProvider
 import ui.AppViewModel
 import ui.FileChooserDialog
-import javax.swing.JFileChooser
+import ui.main.state.MainScreenState
 
 @Composable
 fun MainScreen(
-    viewModel: AppViewModel, fileChooser: JFileChooser, pathProvider: SystemPropertyPathProvider
+    viewModel: AppViewModel,
+    state: MainScreenState
 ) {
 
 
     MaterialTheme {
-        var shouldShowFilePicker by remember { mutableStateOf(false) }
+
         val viewModelState by viewModel.operationsState.collectAsState()
         Column(verticalArrangement = Arrangement.Bottom, horizontalAlignment = Alignment.CenterHorizontally) {
             Text(viewModelState.localFilePath.orEmpty())
-            Button(onClick = {
-                shouldShowFilePicker = true
-            }) {
+            Button(onClick = state::onClickOpenLocalRating) {
                 Text(
-                    "open file picker",
+                    text = MainScreenState.localRatingButtonTitle,
                     style = LocalTextStyle.current.copy(color = if (viewModelState.isError) Color.Red else Color.Black)
                 )
             }
@@ -47,14 +42,15 @@ fun MainScreen(
             LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
         }
 
-        AnimatedVisibility(visible = shouldShowFilePicker) {
+        if (state.shouldShowFilePicker) {
             FileChooserDialog(
-                fileChooser = fileChooser,
+                fileChooser = state.fileChooser,
                 title = "FileChooser",
-                systemPropertyPathProvider = pathProvider,
+                systemPropertyPathProvider = state.pathProvider,
                 onResult = {
-                    viewModel.onClickOpenLocalRating(it.absolutePath)
+                    state.onResult(it, viewModel::onClickOpenLocalRating)
                 })
         }
+
     }
 }
