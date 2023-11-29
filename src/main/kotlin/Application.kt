@@ -1,4 +1,5 @@
 import ui.EntryPoint
+import java.io.File
 
 const val OPEN_LOCAL_RATING = "Open Local Rating File"
 const val OPEN_CENTRAl_RATING = "Open Central Rating File"
@@ -12,7 +13,12 @@ const val CUT = ""
 const val AS = " as "
 const val BASE = "Base"
 
-fun main() = EntryPoint.launchApplication()
+val resourcesDir = File(System.getProperty("compose.application.resources.dir"))
+
+fun main() {
+  //  println(resourcesDir.resolve("st.dll").readText())
+    EntryPoint.launchApplication()
+}
 
 
 

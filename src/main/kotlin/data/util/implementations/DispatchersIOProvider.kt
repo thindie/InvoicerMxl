@@ -1,5 +1,7 @@
-package data.util
+package data.util.implementations
 
+import data.util.DispatcherProvider
+import data.util.ScopeProvider
 import kotlinx.coroutines.CoroutineDispatcher
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers

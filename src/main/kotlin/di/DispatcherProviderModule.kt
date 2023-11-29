@@ -3,7 +3,7 @@ package di
 import dagger.Binds
 import dagger.Module
 import data.util.DispatcherProvider
-import data.util.DispatchersIOProvider
+import data.util.implementations.DispatchersIOProvider
 import data.util.ScopeProvider
 
 @Module

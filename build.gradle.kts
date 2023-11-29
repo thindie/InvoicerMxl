@@ -33,10 +33,11 @@ tasks.withType<KotlinCompile> {
 
 compose.desktop {
     application {
+
         buildTypes.release.proguard {
             isEnabled.set(false)
         }
-        mainClass = "MainKt"
+        mainClass = "ApplicationKt"
         nativeDistributions {
             vendor = "thindie"
             copyright = "2023 thindie"
@@ -44,7 +45,6 @@ compose.desktop {
             packageName = "InvoicerMxl"
             packageVersion = "1.0.0"
             appResourcesRootDir.set(project.layout.projectDirectory.dir("src/appdata"))
-
-        }
+         }
     }
 }

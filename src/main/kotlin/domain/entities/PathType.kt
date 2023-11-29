@@ -1,0 +1,5 @@
+package domain.entities
+
+enum class PathType {
+    MINIMUM_REQUIRED, EXTENDED_OPERATION, SAVING_PATH, SYSTEM_INSTRUCTIONS
+}
