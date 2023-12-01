@@ -11,12 +11,13 @@ import javax.swing.JFileChooser
 @Composable
 fun FileChooserDialog(
     fileChooser: JFileChooser,
+    fileChooserType: Int,
     systemPropertyPathProvider: SystemPropertyPathProvider,
     title: String,
     onResult: (File?) -> Unit
 ) {
     with(fileChooser) {
-
+        dialogType = fileChooserType
         currentDirectory = File(System.getProperty(systemPropertyPathProvider.getProperty()))
         dialogTitle = title
         fileSelectionMode = JFileChooser.FILES_AND_DIRECTORIES
