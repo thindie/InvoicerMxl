@@ -9,13 +9,11 @@ import javax.swing.JFileChooser
 fun rememberMainScreenState(
     fileChooser: JFileChooser,
     systemPropertyPathProvider: SystemPropertyPathProvider,
-    isSaveJChooser: Boolean
 ): MainScreenState {
     return remember() {
         MainScreenState(
             fileChooser = fileChooser,
             pathProvider = systemPropertyPathProvider,
-            isSaveJChooser = isSaveJChooser
         )
     }
 }
