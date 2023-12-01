@@ -2,8 +2,12 @@ package ui
 
 import data.util.ScopeProvider
 import domain.PathProvider
+import domain.entities.Engine
+import domain.usecase.ApplyAdditionFilePathUseCase
 import domain.usecase.ApplyInitialFilePathUseCase
+import domain.usecase.ApplyResultUseCase
 import domain.usecase.ObserveOperationsUseCase
+import domain.usecase.RequestActionsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -17,10 +21,13 @@ import javax.inject.Singleton
 class AppViewModel @Inject constructor(
     private val scopeProvider: ScopeProvider,
     private val observeOperationsUseCase: ObserveOperationsUseCase,
-    private val applyInitialFilePathUseCase: ApplyInitialFilePathUseCase
+    private val applyInitialFilePathUseCase: ApplyInitialFilePathUseCase,
+    private val applyAdditionFilePathUseCase: ApplyAdditionFilePathUseCase,
+    private val applyResult: ApplyResultUseCase,
+    private val requestActionsUseCase: RequestActionsUseCase
 ) {
 
-    private val _operationsState = MutableStateFlow(ModelState())
+    private val _operationsState = MutableStateFlow(ModelState(state = Engine.STANDBY))
 
     val operationsState =
         _operationsState.combine(observeOperationsUseCase.invoke()) { modelState, operationsState ->
@@ -28,15 +35,12 @@ class AppViewModel @Inject constructor(
                 .extract()
 
             modelState.copy(
-                isError = status.isError,
-                isLoading = status.isLoading,
-                isStandBy = status.standBy,
-                isSuccess = status.isSuccess
+                state = status.currentState
             )
         }
             .stateIn(
                 scope = scopeProvider.getScope(),
-                initialValue = ModelState(),
+                initialValue = ModelState(state = Engine.STANDBY),
                 started = SharingStarted.WhileSubscribed(5_000L)
             )
 
@@ -51,21 +55,42 @@ class AppViewModel @Inject constructor(
         }
     }
 
-    fun onClickOpenMergingRating() {
-
+    fun onClickOpenMergingRating(path: String) {
+        _operationsState.update {
+            it.copy(mergingFilePath = path)
+        }
+        scopeProvider.getScope().launch {
+            applyAdditionFilePathUseCase.invoke(
+                PathHolder(path)
+            )
+        }
     }
 
-    fun onClickStartOperation() {
+    fun onClickStartOperation(path: String) {
+        scopeProvider.getScope().launch {
+            applyResult.invoke(
+                PathHolder(path)
+            )
+            requestActionsUseCase()
+        }
+    }
 
+    fun onDismissBasicPath() {
+        _operationsState.update {
+            it.copy(localFilePath = null)
+        }
+    }
+
+    fun onDismissExtraPath() {
+        _operationsState.update {
+            it.copy(mergingFilePath = null)
+        }
     }
 
     data class ModelState(
         val localFilePath: String? = null,
         val mergingFilePath: String? = null,
-        val isLoading: Boolean = false,
-        val isSuccess: Boolean = false,
-        val isError: Boolean = false,
-        val isStandBy: Boolean = true
+        val state: Engine
     )
 
     private data class PathHolder(
