@@ -1,8 +1,7 @@
 package domain
 
+import domain.entities.Engine
+
 interface OperationState {
-     val isSuccess: Boolean
-     val isLoading: Boolean
-     val isError: Boolean
-     val standBy: Boolean
+     val currentState: Engine
 }
