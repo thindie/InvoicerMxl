@@ -13,33 +13,75 @@ import javax.swing.JFileChooser
 class MainScreenState(
     val fileChooser: JFileChooser,
     val pathProvider: SystemPropertyPathProvider,
-    val isSaveJChooser: Boolean,
+) {
 
-    ) {
+    var fileChooserType by mutableStateOf(JFileChooser.OPEN_DIALOG)
+        private set
 
-    val fileChooserTitle by derivedStateOf { title(isSaveJChooser) }
+    private var lastInvokedFilePicker by mutableStateOf(Picker.NONE)
+
+    val fileChooserTitle by derivedStateOf { title(fileChooser.dialogType == JFileChooser.SAVE_DIALOG) }.apply {
+        println(
+            this.toString()
+        )
+    }
 
     var shouldShowFilePicker by mutableStateOf(false)
         private set
 
     fun onClickOpenLocalRating() {
+        fileChooserType = JFileChooser.OPEN_DIALOG
+        lastInvokedFilePicker = Picker.LOCAL
         shouldShowFilePicker = !shouldShowFilePicker
     }
 
-    fun onResult(file: File?, func: (String) -> Unit) {
+    fun onClickCentralBaseRating() {
+        fileChooserType = JFileChooser.OPEN_DIALOG
+        lastInvokedFilePicker = Picker.CENTRAL
+        shouldShowFilePicker = !shouldShowFilePicker
+    }
+
+    fun onResult(
+        file: File?,
+        funcLocal: (String) -> Unit,
+        funcCentral: (String) -> Unit,
+        funcResult: (String) -> Unit
+    ) {
         if (file != null) {
-            func.invoke(file.absolutePath)
+            when (lastInvokedFilePicker) {
+                Picker.CENTRAL -> funcCentral(file.absolutePath)
+                Picker.LOCAL -> funcLocal(file.absolutePath)
+                Picker.NONE -> { /*ignore*/
+                }
+
+                Picker.SAVE -> funcResult(file.absolutePath)
+            }
         }
-        onClickOpenLocalRating()
+        shouldShowFilePicker = !shouldShowFilePicker
     }
 
     private fun title(isSaveFile: Boolean): String {
         return if (isSaveFile) return fileChooserTitleSave else fileChooserTitleOpen
     }
 
+    fun onClickSaveSimplyRating() {
+        fileChooserType = JFileChooser.SAVE_DIALOG
+        lastInvokedFilePicker = Picker.SAVE
+        shouldShowFilePicker = !shouldShowFilePicker
+    }
+
+    fun onClickSaveMergedRating() {
+        fileChooserType = JFileChooser.SAVE_DIALOG
+        lastInvokedFilePicker = Picker.SAVE
+        shouldShowFilePicker = !shouldShowFilePicker
+    }
+
     companion object {
-        const val localRatingButtonTitle = "Pick local"
         private const val fileChooserTitleOpen = "Open file"
         private const val fileChooserTitleSave = "Save file"
+    }
+
+    private enum class Picker {
+        LOCAL, CENTRAL, NONE, SAVE
     }
 }
