@@ -20,10 +20,8 @@ import javax.swing.JFileChooser
 class EntryPoint private constructor() {
     @Inject
     lateinit var viewModel: AppViewModel
-
     @Inject
     lateinit var fileChooser: JFileChooser
-
     @Inject
     @Named("fileChooser")
     lateinit var pathProvider: SystemPropertyPathProvider
@@ -36,7 +34,7 @@ class EntryPoint private constructor() {
     }
 
 
-    private fun start() = application {
+    private fun onCreate() = application {
         MaterialTheme {
             Window(
                 icon = rememberVectorPainter(Icons.Default.List),
@@ -47,7 +45,7 @@ class EntryPoint private constructor() {
             ) {
                 MainScreen(
                     viewModel = viewModel,
-                    state = rememberMainScreenState(fileChooser, pathProvider, isSaveJChooser = false)
+                    state = rememberMainScreenState(fileChooser, pathProvider)
                 )
             }
         }
@@ -60,7 +58,7 @@ class EntryPoint private constructor() {
     }
 
     companion object {
-        fun launchApplication() = EntryPoint().start()
+        fun launchApplication() = EntryPoint().onCreate()
     }
 
 
