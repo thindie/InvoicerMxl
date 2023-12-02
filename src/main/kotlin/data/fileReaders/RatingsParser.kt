@@ -1,6 +1,7 @@
 package data.fileReaders;
 
 import domain.entities.Good
+import domain.entities.emptyGood
 import java.util.*
 class RatingsParser {
 companion object{
@@ -21,7 +22,7 @@ companion object{
             } catch (e: Exception) {
                 println(e.toString())
                 println(text)
-                return null
+                emptyGood
             }
         }
     }

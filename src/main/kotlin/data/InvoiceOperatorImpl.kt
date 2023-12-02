@@ -64,7 +64,7 @@ class InvoiceOperatorImpl @Inject constructor(
                             Paths.get(
                                 resource
                                     .toURI() ?: error("")
-                            ), Charset.forName( parseCharset)
+                            ), Charset.forName(parseCharset)
                         )
                     } catch (e: IllegalStateException) {
                         stateError()
@@ -120,7 +120,7 @@ class InvoiceOperatorImpl @Inject constructor(
                     }
                 operateBaseGoodsList(
                     parseIntoEntitiesList,
-                     parseSchemaSize,
+                    parseSchemaSize,
                     actionsState.value.extendedPath.isNotBlank()
                 )
 
@@ -129,23 +129,22 @@ class InvoiceOperatorImpl @Inject constructor(
     }
 
     private fun divideGoodsListBySkeletonFileLimit(initialList: List<Good>, limit: Int): List<List<Good>> {
-        buildList<List<Good>> {
-            repeat(initialList.size.div(limit)) { iteration ->
-                repeat(initialList.size) { goodsListIndex ->
-                    val filteredGoodsByIndex = mutableListOf<Good>()
+        return buildList<List<Good>> {
+            val repetitions = initialList.size.div(limit).plus(1)
+            var currentIndex = 0
+            repeat(repetitions) {
+                val list = mutableListOf<Good>()
+                repeat(limit) {
                     try {
-                        initialList.forEachIndexed { index, good ->
-                            if (index == goodsListIndex.times(iteration)) {
-                                filteredGoodsByIndex + good
-                            }
-                        }
+                        list.add(initialList[currentIndex])
                     } catch (_: Exception) {
-                        this@buildList + filteredGoodsByIndex
+                        this.add(list)
+                        return this.toList()
                     }
-                    this@buildList + filteredGoodsByIndex
+                    currentIndex++
                 }
+                this.add(list)
             }
-            return toList()
         }
     }
 
@@ -202,17 +201,22 @@ class InvoiceOperatorImpl @Inject constructor(
         entitiesLimit: Int,
         shouldBuildExtendedRating: Boolean
     ) {
+      val onlyZeroInStockBaseList =  filterToZeroStockGoodsList(parseIntoEntitiesList)
         if (shouldBuildExtendedRating) {
 
         } else {
             withContext(dispatcherProvider.getDispatcher()) {
-                val dividedList = divideGoodsListBySkeletonFileLimit(parseIntoEntitiesList, entitiesLimit)
+                val dividedList = divideGoodsListBySkeletonFileLimit(onlyZeroInStockBaseList, entitiesLimit)
                 dividedList.forEachIndexed() { i, dividedGoodsList ->
                     val invoiceFile = mergeGoodsListWithInvoiceSchema(dividedGoodsList, mergeSchema)
                     writeFile(stringToFile = invoiceFile, fileName = actionsState.value.finalPath, iteration = i)
                 }
             }
         }
+    }
+
+    private fun filterToZeroStockGoodsList(parseIntoEntitiesList: List<Good>): List<Good> {
+        return parseIntoEntitiesList.filter { it.stock == 0 }
     }
 
     private fun writeFile(stringToFile: String, fileName: String, iteration: Int) {
