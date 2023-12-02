@@ -109,8 +109,8 @@ class InvoiceOperatorImpl @Inject constructor(
 
     override fun requestAction() {
         scopeProvider.getScope().launch {
-            actionsState.update { it.copy(operationState = OperationStateFabric.loading()) }
-
+            stateLoading()
+            var isError = false
             if (actionsState.value.initialPath.isNotBlank()) {
                 val requestedRatingGet = readFile(actionsState.value.initialPath)
                 val parseIntoEntitiesList = requestedRatingGet
@@ -123,8 +123,13 @@ class InvoiceOperatorImpl @Inject constructor(
                     parseSchemaSize,
                     actionsState.value.extendedPath.isNotBlank()
                 )
+            } else {
+                isError = true
+            }
 
-            } else stateError()
+            if (isError.not()){
+                stateStandBy()
+            }
         }
     }
 
@@ -201,15 +206,29 @@ class InvoiceOperatorImpl @Inject constructor(
         entitiesLimit: Int,
         shouldBuildExtendedRating: Boolean
     ) {
-      val onlyZeroInStockBaseList =  filterToZeroStockGoodsList(parseIntoEntitiesList)
+        val onlyZeroInStockBaseList = filterToZeroStockGoodsList(parseIntoEntitiesList)
         if (shouldBuildExtendedRating) {
 
         } else {
             withContext(dispatcherProvider.getDispatcher()) {
                 val dividedList = divideGoodsListBySkeletonFileLimit(onlyZeroInStockBaseList, entitiesLimit)
                 dividedList.forEachIndexed() { i, dividedGoodsList ->
+                    var isErrorProduced = false
                     val invoiceFile = mergeGoodsListWithInvoiceSchema(dividedGoodsList, mergeSchema)
-                    writeFile(stringToFile = invoiceFile, fileName = actionsState.value.finalPath, iteration = i)
+                    writeFile(
+                        stringToFile = invoiceFile,
+                        fileName = actionsState.value.finalPath,
+                        iteration = i,
+                        notifyError = {
+                            isErrorProduced = true
+                        })
+                    if (isErrorProduced.not()) {
+                        if (i == dividedList.size) {
+                            stateSuccess()
+                        } else {
+                            stateLoading()
+                        }
+                    }
                 }
             }
         }
@@ -219,16 +238,15 @@ class InvoiceOperatorImpl @Inject constructor(
         return parseIntoEntitiesList.filter { it.stock == 0 }
     }
 
-    private fun writeFile(stringToFile: String, fileName: String, iteration: Int) {
+    private fun writeFile(stringToFile: String, fileName: String, iteration: Int, notifyError: () -> Unit) {
         try {
             Files.writeString(
                 Files.createFile(Path.of(newName(iteration, fileName))), stringToFile, Charset.forName(parseCharset)
             )
         } catch (_: java.lang.Exception) {
+            notifyError.invoke()
             stateError()
         }
-
-
     }
 
     private fun newName(times: Int, fileName: String) =
@@ -242,63 +260,28 @@ class InvoiceOperatorImpl @Inject constructor(
             .plus(resultFileSuffix)
 
 
+    private fun stateError() {
+        actionsState.update { it.copy(operationState = OperationStateFabric.error()) }
+    }
+
+    private fun stateLoading() {
+        actionsState.update { it.copy(operationState = OperationStateFabric.loading()) }
+    }
+
+    private fun stateSuccess() {
+        actionsState.update { it.copy(operationState = OperationStateFabric.success()) }
+    }
+
+    private fun stateStandBy() {
+        actionsState.update { it.copy(operationState = OperationStateFabric.awaits()) }
+    }
+
     data class InvoiceOperationsState(
         val operationState: OperationState,
         val initialPath: String = "",
         val extendedPath: String = "",
         val finalPath: String = ""
     ) : Event<OperationState> {
-
-
         override fun extract() = operationState
     }
-
-    private fun stateError() {
-        actionsState.update { it.copy(operationState = OperationStateFabric.error()) }
-    }
 }
-
-/*    override suspend fun writeNewGoodsFile(fileName: String, goodsList: List<GoodsVolume>) {
-        var local: LocalBaseGoodsVolume? = null
-        var central: CentralBaseGoodsVolume? = null
-
-        goodsList.forEach {
-            when (it) {
-                is LocalBaseGoodsVolume -> {
-                    local = it
-                }
-
-                is CentralBaseGoodsVolume -> {
-                    central = it
-                }
-            }
-        }
-        RatingWriter.inject(
-            fileName,
-            this,
-            buildMergedGoodsList(local ?: throw Exception(), central ?: throw Exception())
-        )
-        writeFileRating.write()
-
-    }
-
-    private fun buildMergedGoodsList(
-        localRatingsList: LocalBaseGoodsVolume,
-        allTimeRating: CentralBaseGoodsVolume,
-    ): List<Good> {
-
-        val mergedGoodsVolumeList = mutableListOf<Good>()
-
-        val localListFiltered = localRatingsList.list.filter {
-            it.stock == 0
-        }
-        localListFiltered.forEach { if (it.stock == 0) mergedGoodsVolumeList.add(it) }
-
-        val allTimeListFiltered = allTimeRating.list.filter {
-            !mergedGoodsVolumeList.contains(it)
-        }
-
-        allTimeListFiltered.forEach { if (it.stock > 0) mergedGoodsVolumeList.add(it) }
-
-        return mergedGoodsVolumeList.toList()
-    }*/
