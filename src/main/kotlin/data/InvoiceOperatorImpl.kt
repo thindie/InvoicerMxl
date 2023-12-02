@@ -111,23 +111,42 @@ class InvoiceOperatorImpl @Inject constructor(
         scopeProvider.getScope().launch {
             stateLoading()
             var isError = false
-            if (actionsState.value.initialPath.isNotBlank()) {
+            if (actionsState.value.isOnlyLocalInvoice()) {
                 val requestedRatingGet = readFile(actionsState.value.initialPath)
                 val parseIntoEntitiesList = requestedRatingGet
                     .mapNotNull { RatingsParser.fromRating(it) }
+                    .filter { it.stock == 0 }
                     .apply {
                         if (isEmpty()) stateError()
                     }
-                operateBaseGoodsList(
-                    parseIntoEntitiesList,
-                    parseSchemaSize,
-                    actionsState.value.extendedPath.isNotBlank()
+                operateGoodsList(
+                    parseIntoEntitiesList = parseIntoEntitiesList,
+                    entitiesLimit = parseSchemaSize,
                 )
+            } else if (actionsState.value.isMergingInvoice()) {
+                val localStocksFile = readFile(actionsState.value.initialPath)
+                val parseIntoGoodsTitleList = localStocksFile.map {
+                    RatingsParser.fromStocks(it)
+                }
+
+                val centralRating = readFile(actionsState.value.extendedPath)
+                    .filterNot {
+                        val title = RatingsParser.fromStocks(it)
+                        println(title)
+                        parseIntoGoodsTitleList.contains(title)
+                    }.mapNotNull {
+                        RatingsParser.fromRating(it)
+                    }.filter {
+                        it.stock != 0
+                    }
+
+                operateGoodsList(parseIntoEntitiesList = centralRating, entitiesLimit = parseSchemaSize)
+
             } else {
                 isError = true
             }
 
-            if (isError.not()){
+            if (isError.not()) {
                 stateStandBy()
             }
         }
@@ -185,7 +204,7 @@ class InvoiceOperatorImpl @Inject constructor(
         }
         // CB to Num Replace
         var i = 0
-        while (i < listGoodsToInvoice.size && i < anchorLength) {
+        while (i < listGoodsToInvoice.size && i < parseSchemaSize) {
             val target = resultString.substring(
                 massiveOfNumbersOfNomeToReplace[i],
                 massiveOfNumbersOfNomeToReplace[i] + anchorLength
@@ -201,38 +220,33 @@ class InvoiceOperatorImpl @Inject constructor(
         return resultString
     }
 
-    private suspend fun operateBaseGoodsList(
+    private suspend fun operateGoodsList(
         parseIntoEntitiesList: List<Good>,
         entitiesLimit: Int,
-        shouldBuildExtendedRating: Boolean
     ) {
-        val onlyZeroInStockBaseList = filterToZeroStockGoodsList(parseIntoEntitiesList)
-        if (shouldBuildExtendedRating) {
-
-        } else {
-            withContext(dispatcherProvider.getDispatcher()) {
-                val dividedList = divideGoodsListBySkeletonFileLimit(onlyZeroInStockBaseList, entitiesLimit)
-                dividedList.forEachIndexed() { i, dividedGoodsList ->
-                    var isErrorProduced = false
-                    val invoiceFile = mergeGoodsListWithInvoiceSchema(dividedGoodsList, mergeSchema)
-                    writeFile(
-                        stringToFile = invoiceFile,
-                        fileName = actionsState.value.finalPath,
-                        iteration = i,
-                        notifyError = {
-                            isErrorProduced = true
-                        })
-                    if (isErrorProduced.not()) {
-                        if (i == dividedList.size) {
-                            stateSuccess()
-                        } else {
-                            stateLoading()
-                        }
+        withContext(dispatcherProvider.getDispatcher()) {
+            val dividedList = divideGoodsListBySkeletonFileLimit(parseIntoEntitiesList, entitiesLimit)
+            dividedList.forEachIndexed() { i, dividedGoodsList ->
+                var isErrorProduced = false
+                val invoiceFile = mergeGoodsListWithInvoiceSchema(dividedGoodsList, mergeSchema)
+                writeFile(
+                    stringToFile = invoiceFile,
+                    fileName = actionsState.value.finalPath,
+                    iteration = i,
+                    notifyError = {
+                        isErrorProduced = true
+                    })
+                if (isErrorProduced.not()) {
+                    if (i == dividedList.size) {
+                        stateSuccess()
+                    } else {
+                        stateLoading()
                     }
                 }
             }
         }
     }
+
 
     private fun filterToZeroStockGoodsList(parseIntoEntitiesList: List<Good>): List<Good> {
         return parseIntoEntitiesList.filter { it.stock == 0 }
@@ -283,5 +297,8 @@ class InvoiceOperatorImpl @Inject constructor(
         val finalPath: String = ""
     ) : Event<OperationState> {
         override fun extract() = operationState
+
+        fun isOnlyLocalInvoice() = initialPath.isNotBlank() && extendedPath.isBlank()
+        fun isMergingInvoice() = initialPath.isNotBlank() && extendedPath.isNotBlank()
     }
 }
