@@ -12,7 +12,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -45,26 +44,28 @@ fun MainScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = modifier.height(12.dp))
-        Text(text = "current state is ${viewModelState.state.name}")
-        Spacer(modifier = modifier.height(12.dp))
         AnimatedVisibility(viewModelState.state == Engine.STANDBY) {
             Column(
                 modifier = modifier.fillMaxWidth().animateContentSize()
             ) {
-                InvoiceElement(modifier = modifier,
+                InvoiceElement(
+                    modifier = modifier,
                     pathTitle = "My rating:",
                     currentPath = viewModelState.localFilePath,
                     onClickDismiss = {
                         viewModel.onDismissExtraPath()
                         viewModel.onDismissBasicPath()
                     },
-                    onClickConfirm = state::onClickSaveSimplyRating)
+                    onClickConfirm = state::onClickSaveSimplyRating
+                )
                 Spacer(modifier = modifier.height(12.dp))
-                InvoiceElement(modifier = modifier,
+                InvoiceElement(
+                    modifier = modifier,
                     pathTitle = "Merging:",
                     currentPath = viewModelState.mergingFilePath,
                     onClickDismiss = viewModel::onDismissExtraPath,
-                    onClickConfirm = state::onClickSaveMergedRating)
+                    onClickConfirm = state::onClickSaveMergedRating
+                )
             }
         }
         Spacer(modifier = modifier.height(12.dp))
@@ -74,8 +75,12 @@ fun MainScreen(
             operationState = viewModelState
         )
         Spacer(modifier = modifier.height(12.dp))
-        AnimatedVisibility(viewModelState.state == Engine.LOAD) {
-            LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp))
+        AnimatedVisibility(viewModelState.state == Engine.LOAD, modifier = modifier.fillMaxSize()) {
+            LinearProgressIndicator(
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp),
+                color = MaterialTheme.colors.surface,
+                backgroundColor = MaterialTheme.colors.onSurface
+            )
         }
     }
     if (state.shouldShowFilePicker) {
