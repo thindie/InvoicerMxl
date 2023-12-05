@@ -1,4 +1,4 @@
-package ui.main
+package ui.feature_invoice.main.state
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material.Button
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -23,15 +24,15 @@ import androidx.compose.ui.unit.dp
 import domain.entities.Engine
 import ui.AppViewModel
 import ui.FileChooserDialog
-import ui.composables.ControlPanel
-import ui.composables.InvoiceElement
-import ui.main.state.MainScreenState
+import ui.feature_invoice.composables.ControlPanel
+import ui.feature_invoice.composables.InvoiceElement
 
 @Composable
-fun MainScreen(
-    modifier: Modifier = Modifier, viewModel: AppViewModel, state: MainScreenState
+fun InvoiceScreen(
+    modifier: Modifier = Modifier, viewModel: AppViewModel, state: MainScreenState, onClickShareStocks: () -> Unit
 ) {
     val viewModelState by viewModel.operationsState.collectAsState()
+
     Column(
         modifier = modifier.background(
             Brush.verticalGradient(
@@ -44,6 +45,9 @@ fun MainScreen(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
+        Button(onClick = onClickShareStocks) {
+            Text("Поделиться наличием")
+        }
         Spacer(modifier = modifier.height(12.dp))
         Text(text = "current state is ${viewModelState.state.name}")
         Spacer(modifier = modifier.height(12.dp))
@@ -51,20 +55,24 @@ fun MainScreen(
             Column(
                 modifier = modifier.fillMaxWidth().animateContentSize()
             ) {
-                InvoiceElement(modifier = modifier,
+                InvoiceElement(
+                    modifier = modifier,
                     pathTitle = "My rating:",
                     currentPath = viewModelState.localFilePath,
                     onClickDismiss = {
                         viewModel.onDismissExtraPath()
                         viewModel.onDismissBasicPath()
                     },
-                    onClickConfirm = state::onClickSaveSimplyRating)
+                    onClickConfirm = state::onClickSaveSimplyRating
+                )
                 Spacer(modifier = modifier.height(12.dp))
-                InvoiceElement(modifier = modifier,
+                InvoiceElement(
+                    modifier = modifier,
                     pathTitle = "Merging:",
                     currentPath = viewModelState.mergingFilePath,
                     onClickDismiss = viewModel::onDismissExtraPath,
-                    onClickConfirm = state::onClickSaveMergedRating)
+                    onClickConfirm = state::onClickSaveMergedRating
+                )
             }
         }
         Spacer(modifier = modifier.height(12.dp))

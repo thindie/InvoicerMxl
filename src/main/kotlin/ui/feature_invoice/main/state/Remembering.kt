@@ -1,4 +1,4 @@
-package ui.main.state
+package ui.feature_invoice.main.state
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.remember

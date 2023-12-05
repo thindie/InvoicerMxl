@@ -11,8 +11,10 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import data.util.SystemPropertyPathProvider
 import di.AppComponent
-import ui.main.MainScreen
-import ui.main.state.rememberMainScreenState
+import navigation.NavHost
+import navigation.rememberNavController
+import ui.feature_invoice.invoice
+import ui.feature_share.share
 import javax.inject.Inject
 import javax.inject.Named
 import javax.swing.JFileChooser
@@ -20,8 +22,10 @@ import javax.swing.JFileChooser
 class EntryPoint private constructor() {
     @Inject
     lateinit var viewModel: AppViewModel
+
     @Inject
     lateinit var fileChooser: JFileChooser
+
     @Inject
     @Named("fileChooser")
     lateinit var pathProvider: SystemPropertyPathProvider
@@ -43,10 +47,15 @@ class EntryPoint private constructor() {
                 title = TITLE,
                 onCloseRequest = ::exitApplication
             ) {
-                MainScreen(
-                    viewModel = viewModel,
-                    state = rememberMainScreenState(fileChooser, pathProvider)
-                )
+                val navController = rememberNavController("invoice")
+                NavHost(navController = navController) {
+                    invoice(
+                        viewModel = viewModel,
+                        fileChooser = fileChooser,
+                        pathProvider,
+                        onNavigateShareStocks = { navController.navigate("share") })
+                    share(onClickInvoice = { navController.navigate("invoice") })
+                }
             }
         }
     }
