@@ -14,6 +14,7 @@ import kotlinx.coroutines.flow.combine
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import root.ViewModel
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -25,7 +26,7 @@ class InvoiceScreenViewModel @Inject constructor(
     private val applyAdditionFilePathUseCase: ApplyAdditionFilePathUseCase,
     private val applyResult: ApplyResultUseCase,
     private val requestActionsUseCase: RequestActionsUseCase
-) {
+) : ViewModel {
 
     private val _operationsState = MutableStateFlow(ModelState(state = Engine.STANDBY))
 

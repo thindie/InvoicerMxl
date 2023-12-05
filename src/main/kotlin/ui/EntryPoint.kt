@@ -10,19 +10,17 @@ import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import data.util.SystemPropertyPathProvider
-import di.AppComponent
 import navigation.NavHost
 import navigation.rememberNavController
+import root.InvoicerApplication
 import ui.feature_invoice.invoice
-import ui.feature_invoice.viewmodel.InvoiceScreenViewModel
 import ui.feature_share.share
 import javax.inject.Inject
 import javax.inject.Named
 import javax.swing.JFileChooser
 
-class EntryPoint private constructor() {
-    @Inject
-    lateinit var viewModel: InvoiceScreenViewModel
+class EntryPoint private constructor() : InvoicerApplication() {
+
 
     @Inject
     lateinit var fileChooser: JFileChooser
@@ -31,10 +29,8 @@ class EntryPoint private constructor() {
     @Named("fileChooser")
     lateinit var pathProvider: SystemPropertyPathProvider
 
-    private var daggerAppComponent: AppComponent? = null
 
     init {
-        daggerAppComponent = initDaggerComponent()
         daggerAppComponent?.inject(this@EntryPoint)
     }
 
@@ -48,23 +44,16 @@ class EntryPoint private constructor() {
                 title = TITLE,
                 onCloseRequest = ::exitApplication
             ) {
-                val navController = rememberNavController("invoice")
+                val navController = rememberNavController(Destinations.invoice)
                 NavHost(navController = navController) {
                     invoice(
-                        viewModel = viewModel,
                         fileChooser = fileChooser,
-                        pathProvider,
-                        onNavigateShareStocks = { navController.navigate("share") })
-                    share(onClickInvoice = { navController.navigate("invoice") })
+                        systemPropertyPathProvider = pathProvider,
+                        onNavigateShareStocks = { navController.navigate(Destinations.share) })
+                    share(onClickInvoice = { navController.navigate(Destinations.invoice) })
                 }
             }
         }
-    }
-
-    private fun initDaggerComponent(): AppComponent {
-        return if (this.daggerAppComponent == null) {
-            AppComponent.init()
-        } else checkNotNull(daggerAppComponent)
     }
 
     companion object {

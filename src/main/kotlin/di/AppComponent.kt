@@ -1,6 +1,7 @@
 package di
 
 import dagger.Component
+import root.InvoicerApplication
 import ui.EntryPoint
 import javax.inject.Singleton
 
@@ -21,4 +22,6 @@ interface AppComponent {
     }
 
     fun inject(entryPoint: EntryPoint)
+
+    fun inject(application: InvoicerApplication)
 }

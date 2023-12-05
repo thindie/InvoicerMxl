@@ -1,4 +1,8 @@
 package ui.feature_share.viewmodel
 
-class ShareScreenViewModel {
+import root.ViewModel
+import javax.inject.Inject
+
+class ShareScreenViewModel @Inject constructor() : ViewModel {
+    val viewModelText = "text"
 }
