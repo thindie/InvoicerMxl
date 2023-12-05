@@ -2,15 +2,15 @@ package ui.feature_invoice
 
 import data.util.SystemPropertyPathProvider
 import navigation.NavGraph
-import ui.AppViewModel
-import ui.feature_invoice.main.state.InvoiceScreen
-import ui.feature_invoice.main.state.rememberMainScreenState
+import ui.feature_invoice.viewmodel.InvoiceScreenViewModel
+import ui.feature_invoice.screen.main.state.InvoiceScreen
+import ui.feature_invoice.screen.main.state.rememberMainScreenState
 import javax.swing.JFileChooser
 
 private const val INVOICE = "invoice"
 
 fun NavGraph.Companion.invoice(
-    viewModel: AppViewModel,
+    viewModel: InvoiceScreenViewModel,
     fileChooser: JFileChooser,
     systemPropertyPathProvider: SystemPropertyPathProvider,
     onNavigateShareStocks: () -> Unit

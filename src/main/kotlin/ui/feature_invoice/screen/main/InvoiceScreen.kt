@@ -1,4 +1,4 @@
-package ui.feature_invoice.main.state
+package ui.feature_invoice.screen.main.state
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.animateContentSize
@@ -22,14 +22,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.unit.dp
 import domain.entities.Engine
-import ui.AppViewModel
+import ui.feature_invoice.viewmodel.InvoiceScreenViewModel
 import ui.FileChooserDialog
-import ui.feature_invoice.composables.ControlPanel
-import ui.feature_invoice.composables.InvoiceElement
+import ui.feature_invoice.screen.composables.ControlPanel
+import ui.feature_invoice.screen.composables.InvoiceElement
 
 @Composable
 fun InvoiceScreen(
-    modifier: Modifier = Modifier, viewModel: AppViewModel, state: MainScreenState, onClickShareStocks: () -> Unit
+    modifier: Modifier = Modifier, viewModel: InvoiceScreenViewModel, state: MainScreenState, onClickShareStocks: () -> Unit
 ) {
     val viewModelState by viewModel.operationsState.collectAsState()
 

@@ -14,6 +14,7 @@ import di.AppComponent
 import navigation.NavHost
 import navigation.rememberNavController
 import ui.feature_invoice.invoice
+import ui.feature_invoice.viewmodel.InvoiceScreenViewModel
 import ui.feature_share.share
 import javax.inject.Inject
 import javax.inject.Named
@@ -21,7 +22,7 @@ import javax.swing.JFileChooser
 
 class EntryPoint private constructor() {
     @Inject
-    lateinit var viewModel: AppViewModel
+    lateinit var viewModel: InvoiceScreenViewModel
 
     @Inject
     lateinit var fileChooser: JFileChooser

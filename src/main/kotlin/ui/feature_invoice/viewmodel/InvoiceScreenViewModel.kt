@@ -1,4 +1,4 @@
-package ui
+package ui.feature_invoice.viewmodel
 
 import data.util.ScopeProvider
 import domain.PathProvider
@@ -18,7 +18,7 @@ import javax.inject.Inject
 import javax.inject.Singleton
 
 @Singleton
-class AppViewModel @Inject constructor(
+class InvoiceScreenViewModel @Inject constructor(
     private val scopeProvider: ScopeProvider,
     private val observeOperationsUseCase: ObserveOperationsUseCase,
     private val applyInitialFilePathUseCase: ApplyInitialFilePathUseCase,

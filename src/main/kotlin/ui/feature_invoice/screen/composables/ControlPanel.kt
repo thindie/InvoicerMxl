@@ -1,4 +1,4 @@
-package ui.feature_invoice.composables
+package ui.feature_invoice.screen.composables
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.layout.Arrangement
@@ -16,13 +16,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
-import ui.AppViewModel
+import ui.feature_invoice.viewmodel.InvoiceScreenViewModel
 
 
 @Composable
 fun ControlPanel(
     modifier: Modifier = Modifier,
-    operationState: AppViewModel.ModelState,
+    operationState: InvoiceScreenViewModel.ModelState,
     onClickBaseFilePick: () -> Unit,
     onClickExtraFilePick: () -> Unit,
 ) {

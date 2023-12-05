@@ -1,4 +1,4 @@
-package ui.feature_invoice.composables
+package ui.feature_invoice.screen.composables
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.background

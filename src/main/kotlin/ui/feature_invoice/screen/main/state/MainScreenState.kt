@@ -1,4 +1,4 @@
-package ui.feature_invoice.main.state
+package ui.feature_invoice.screen.main.state
 
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
