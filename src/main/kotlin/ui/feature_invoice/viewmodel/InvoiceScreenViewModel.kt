@@ -3,11 +3,11 @@ package ui.feature_invoice.viewmodel
 import data.util.ScopeProvider
 import domain.PathProvider
 import domain.entities.Engine
-import domain.usecase.ApplyAdditionFilePathUseCase
-import domain.usecase.ApplyInitialFilePathUseCase
-import domain.usecase.ApplyResultUseCase
-import domain.usecase.ObserveOperationsUseCase
-import domain.usecase.RequestActionsUseCase
+import domain.usecase.invoice.ApplyAdditionFilePathUseCase
+import domain.usecase.invoice.ApplyInitialFilePathUseCase
+import domain.usecase.invoice.ApplyResultUseCase
+import domain.usecase.invoice.ObserveOperationsUseCase
+import domain.usecase.invoice.RequestActionsUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine

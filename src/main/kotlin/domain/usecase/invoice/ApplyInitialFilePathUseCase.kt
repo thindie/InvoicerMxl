@@ -1,4 +1,4 @@
-package domain.usecase
+package domain.usecase.invoice
 
 import domain.ActionsRepository
 import domain.PathProvider
