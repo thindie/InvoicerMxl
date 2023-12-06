@@ -4,12 +4,17 @@ import androidx.compose.material.Button
 import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import root.Application.Companion.viewModel
+import ui.feature_share.screen.state.ShareScreenState
 import ui.feature_share.viewmodel.ShareScreenViewModel
 
 @Composable
-fun ShareScreen(shareScreenViewModel: ShareScreenViewModel = viewModel(), onClickBack:() -> Unit) {
+fun ShareScreen(
+    shareScreenViewModel: ShareScreenViewModel = viewModel(),
+    shareScreenState: ShareScreenState,
+    onClickBack: () -> Unit
+) {
     Text(text = "hello from ${shareScreenViewModel.viewModelText}")
-    Button(onClick = onClickBack){
+    Button(onClick = onClickBack) {
         Text("BACK")
     }
 }

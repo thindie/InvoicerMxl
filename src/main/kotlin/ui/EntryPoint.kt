@@ -45,12 +45,20 @@ class EntryPoint private constructor() : InvoicerApplication() {
                 onCloseRequest = ::exitApplication
             ) {
                 val navController = rememberNavController(Destinations.invoice)
+                val invoice = { navController.navigate(Destinations.invoice) }
+                val share = { navController.navigate(Destinations.share) }
+
                 NavHost(navController = navController) {
                     invoice(
                         fileChooser = fileChooser,
                         systemPropertyPathProvider = pathProvider,
-                        onNavigateShareStocks = { navController.navigate(Destinations.share) })
-                    share(onClickInvoice = { navController.navigate(Destinations.invoice) })
+                        onNavigateShareStocks = share
+                    )
+                    share(
+                        pathProvider = pathProvider,
+                        fileChooser = fileChooser,
+                        onClickInvoice = invoice
+                    )
                 }
             }
         }

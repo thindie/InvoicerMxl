@@ -1,4 +1,4 @@
-package ui.feature_invoice.screen.main.state
+package ui.feature_share.screen.state
 
 import androidx.compose.runtime.Stable
 import androidx.compose.runtime.derivedStateOf
@@ -10,7 +10,7 @@ import java.io.File
 import javax.swing.JFileChooser
 
 @Stable
-class MainScreenState(
+class ShareScreenState(
     val fileChooser: JFileChooser,
     val pathProvider: SystemPropertyPathProvider,
 ) {
@@ -29,31 +29,22 @@ class MainScreenState(
     var shouldShowFilePicker by mutableStateOf(false)
         private set
 
-    fun onClickOpenLocalRating() {
+    fun onClickOpenStocking() {
         fileChooserType = JFileChooser.OPEN_DIALOG
         lastInvokedFilePicker = Picker.LOCAL
         shouldShowFilePicker = !shouldShowFilePicker
     }
 
-    fun onClickCentralBaseRating() {
-        fileChooserType = JFileChooser.OPEN_DIALOG
-        lastInvokedFilePicker = Picker.CENTRAL
-        shouldShowFilePicker = !shouldShowFilePicker
-    }
 
     fun onResult(
         file: File?,
         funcLocal: (String) -> Unit,
-        funcCentral: (String) -> Unit,
         funcResult: (String) -> Unit
     ) {
         if (file != null) {
             when (lastInvokedFilePicker) {
-                Picker.CENTRAL -> funcCentral(file.absolutePath)
                 Picker.LOCAL -> funcLocal(file.absolutePath)
-                Picker.NONE -> { /*ignore*/
-                }
-
+                Picker.NONE -> {}
                 Picker.SAVE -> funcResult(file.absolutePath)
             }
         }
@@ -64,17 +55,12 @@ class MainScreenState(
         return if (isSaveFile) return fileChooserTitleSave else fileChooserTitleOpen
     }
 
-    fun onClickSaveSimplyRating() {
+    fun onClickSaveParsedStocking() {
         fileChooserType = JFileChooser.SAVE_DIALOG
         lastInvokedFilePicker = Picker.SAVE
         shouldShowFilePicker = !shouldShowFilePicker
     }
 
-    fun onClickSaveMergedRating() {
-        fileChooserType = JFileChooser.SAVE_DIALOG
-        lastInvokedFilePicker = Picker.SAVE
-        shouldShowFilePicker = !shouldShowFilePicker
-    }
 
     companion object {
         private const val fileChooserTitleOpen = "Open file"
@@ -82,6 +68,6 @@ class MainScreenState(
     }
 
     private enum class Picker {
-        LOCAL, CENTRAL, NONE, SAVE
+        LOCAL, NONE, SAVE
     }
 }

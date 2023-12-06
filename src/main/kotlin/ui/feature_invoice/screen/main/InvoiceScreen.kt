@@ -26,14 +26,14 @@ import root.Application.Companion.viewModel
 import ui.FileChooserDialog
 import ui.feature_invoice.screen.composables.ControlPanel
 import ui.feature_invoice.screen.composables.InvoiceElement
-import ui.feature_invoice.screen.main.state.MainScreenState
+import ui.feature_invoice.screen.main.state.InvoiceScreenState
 import ui.feature_invoice.viewmodel.InvoiceScreenViewModel
 
 @Composable
 fun InvoiceScreen(
     modifier: Modifier = Modifier,
     viewModel: InvoiceScreenViewModel = viewModel(),
-    state: MainScreenState,
+    state: InvoiceScreenState,
     onClickShareStocks: () -> Unit
 ) {
     val viewModelState by viewModel.operationsState.collectAsState()

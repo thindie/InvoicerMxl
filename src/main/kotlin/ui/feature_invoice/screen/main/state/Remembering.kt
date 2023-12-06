@@ -6,12 +6,12 @@ import data.util.SystemPropertyPathProvider
 import javax.swing.JFileChooser
 
 @Composable
-fun rememberMainScreenState(
+fun rememberInvoiceScreenState(
     fileChooser: JFileChooser,
     systemPropertyPathProvider: SystemPropertyPathProvider,
-): MainScreenState {
+): InvoiceScreenState {
     return remember() {
-        MainScreenState(
+        InvoiceScreenState(
             fileChooser = fileChooser,
             pathProvider = systemPropertyPathProvider,
         )
