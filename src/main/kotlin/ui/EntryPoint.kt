@@ -40,7 +40,7 @@ class EntryPoint private constructor() : InvoicerApplication() {
         InvoicerAppTheme {
             Window(
                 icon = rememberVectorPainter(Icons.Default.List),
-                state = rememberWindowState(width = 700.dp, height = 300.dp),
+                state = rememberWindowState(width = 700.dp, height = 400.dp),
                 resizable = true,
                 title = TITLE,
                 onCloseRequest = ::exitApplication

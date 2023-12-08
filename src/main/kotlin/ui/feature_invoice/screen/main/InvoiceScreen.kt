@@ -5,14 +5,15 @@ import androidx.compose.animation.animateContentSize
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.LinearProgressIndicator
-import androidx.compose.material.MaterialTheme
-import androidx.compose.material.Text
+import androidx.compose.material3.LinearProgressIndicator
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -25,7 +26,9 @@ import root.Application.Companion.viewModel
 import ui.FileChooserDialog
 import ui.feature_invoice.screen.composables.ControlPanel
 import ui.feature_invoice.screen.composables.InvoiceElement
+import ui.feature_invoice.screen.composables.ScreenHint
 import ui.feature_invoice.screen.composables.SharePanel
+import ui.feature_invoice.screen.composables.invoiceScreenHint
 import ui.feature_invoice.screen.main.state.InvoiceScreenState
 import ui.feature_invoice.viewmodel.InvoiceScreenViewModel
 
@@ -42,8 +45,8 @@ fun InvoiceScreen(
         modifier = modifier.background(
             Brush.verticalGradient(
                 listOf(
-                    MaterialTheme.colors.background,
-                    MaterialTheme.colors.primary
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.primary
                 )
             )
         ).fillMaxSize(),
@@ -51,6 +54,13 @@ fun InvoiceScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         SharePanel(modifier = modifier, onClickShare = onClickShareStocks)
+        Row(horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                "Заказываем!",
+                style = MaterialTheme.typography.headlineMedium.copy(MaterialTheme.colorScheme.onSurface)
+            )
+        }
+        ScreenHint(hint = invoiceScreenHint)
         Spacer(modifier = modifier.height(12.dp))
         AnimatedVisibility(viewModelState.state == Engine.STANDBY) {
             Column(
@@ -103,3 +113,4 @@ fun InvoiceScreen(
     }
 
 }
+

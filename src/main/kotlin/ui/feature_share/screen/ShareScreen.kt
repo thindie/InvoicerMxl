@@ -11,10 +11,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
 import androidx.compose.material.icons.outlined.ArrowBack
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -27,6 +28,7 @@ import root.Application.Companion.viewModel
 import ui.FileChooserDialog
 import ui.feature_invoice.screen.composables.ControlPanelMainButton
 import ui.feature_invoice.screen.composables.InvoiceElement
+import ui.feature_invoice.screen.composables.ScreenHint
 import ui.feature_share.screen.state.ShareScreenState
 import ui.feature_share.viewmodel.ShareScreenViewModel
 
@@ -40,43 +42,45 @@ fun ShareScreen(
 
     val state by shareScreenViewModel.operationsState.collectAsState()
     Column(
-        modifier = modifier
-            .background(
-                Brush.verticalGradient(
-                    listOf(
-                        MaterialTheme.colorScheme.background,
-                        MaterialTheme.colorScheme.secondary,
-                        MaterialTheme.colorScheme.onSecondary
-                    )
+        modifier = modifier.background(
+            Brush.verticalGradient(
+                listOf(
+                    MaterialTheme.colorScheme.background,
+                    MaterialTheme.colorScheme.primary
                 )
             )
-            .fillMaxSize(),
-        verticalArrangement = Arrangement.Bottom,
+        ).fillMaxSize(),
+        verticalArrangement = Arrangement.SpaceEvenly,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = modifier.height(12.dp))
-        Row(modifier = modifier.padding(horizontal = 20.dp)) {
+        Row(
+            modifier = modifier.fillMaxWidth().padding(horizontal = 20.dp), horizontalArrangement = Arrangement.Start
+        ) {
             ControlPanelMainButton(
                 modifier,
                 title = "Back",
                 painter = rememberVectorPainter(Icons.Outlined.ArrowBack),
-                onClickBack, shouldShowAdditionalSection = false
+                onClickBack,
+                shouldShowAdditionalSection = false
             )
         }
-        Spacer(modifier = modifier.weight(1f, true))
+        Row(horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
+            Text(
+                "Выгружаемся!",
+                style = MaterialTheme.typography.headlineMedium.copy(MaterialTheme.colorScheme.onSurface)
+            )
+        }
+        ScreenHint(hint = shareScreenHint)
 
         Column(
-            modifier = modifier
-                .fillMaxWidth()
-                .animateContentSize()
+            modifier = modifier.fillMaxWidth().animateContentSize()
         ) {
-            InvoiceElement(
-                modifier = modifier,
+            InvoiceElement(modifier = modifier,
                 pathTitle = "All stocks:",
                 currentPath = state.localFilePath,
                 onClickDismiss = shareScreenViewModel::onDismissBasicPath,
-                onClickConfirm = { shareScreenViewModel.onClickStartOperation(state.localFilePath ?: "") }
-            )
+                onClickConfirm = { shareScreenViewModel.onClickStartOperation(state.localFilePath ?: "") })
 
 
         }
@@ -107,3 +111,6 @@ fun ShareScreen(
     }
 
 }
+
+val shareScreenHint =
+    "На этом экране мы должны, используя нашу инвентаризацию с оптовой ценой \n" + "сформировать CSV файл для отправки с нашим наличием и ценами"

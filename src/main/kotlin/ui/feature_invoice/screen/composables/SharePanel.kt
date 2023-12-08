@@ -3,8 +3,6 @@ package ui.feature_invoice.screen.composables
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.material.Icon
-import androidx.compose.material3.IconButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Share
 import androidx.compose.runtime.Composable
@@ -19,8 +17,11 @@ fun SharePanel(modifier: Modifier = Modifier, onClickShare: () -> Unit) {
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Start
     ) {
-        IconButton(onClickShare){
-            Icon(painter = rememberVectorPainter(Icons.Outlined.Share), contentDescription = null)
-        }
-     }
+        ControlPanelMainButton(
+            onClickOpenButton = onClickShare,
+            title = "Share",
+            painter = rememberVectorPainter(Icons.Outlined.Share),
+            shouldShowAdditionalSection = false
+        )
+    }
 }

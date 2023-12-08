@@ -10,14 +10,14 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Delete
 import androidx.compose.material3.Button
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
-import androidx.compose.material.icons.filled.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
@@ -62,10 +62,10 @@ fun InvoiceElement(
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            Text(text = pathTitle, style = MaterialTheme.typography.headlineSmall.copy(fontWeight = FontWeight.W900))
+            Text(text = pathTitle, style = MaterialTheme.typography.titleLarge.copy(fontWeight = FontWeight.W900))
             Text(
                 text = currentTitle,
-                style = MaterialTheme.typography.labelLarge.copy(
+                style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.colorScheme.background,
                     fontWeight = FontWeight.W900
                 )
@@ -75,10 +75,10 @@ fun InvoiceElement(
 
                 Button(
                     onClick = onClickConfirm,
-                    contentPadding = PaddingValues(2.dp)
+                    contentPadding = PaddingValues(4.dp)
                 ) {
                     Icon(painter = rememberVectorPainter(Icons.Default.Build), null)
-                    Text("Создать")
+                    Text("Создать", style = MaterialTheme.typography.labelSmall)
                 }
                 IconButton(onClickDismiss) {
                     Icon(

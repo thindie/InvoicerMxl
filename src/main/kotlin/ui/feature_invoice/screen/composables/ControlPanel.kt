@@ -10,14 +10,13 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Icon
-import androidx.compose.material3.LocalTextStyle
-import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Home
 import androidx.compose.material.icons.outlined.ShoppingCart
+import androidx.compose.material3.Icon
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -83,6 +82,6 @@ fun RowScope.ControlPanelMainButton(
             Icon(painter = (painter), contentDescription = null)
         }
 
-        Text(title, style = LocalTextStyle.current.copy(color = MaterialTheme.colorScheme.onBackground))
+        Text(title, style = MaterialTheme.typography.headlineSmall.copy(color = MaterialTheme.colorScheme.onBackground))
     }
 }
