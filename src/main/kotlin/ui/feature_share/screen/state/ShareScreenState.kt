@@ -20,11 +20,7 @@ class ShareScreenState(
 
     private var lastInvokedFilePicker by mutableStateOf(Picker.NONE)
 
-    val fileChooserTitle by derivedStateOf { title(fileChooser.dialogType == JFileChooser.SAVE_DIALOG) }.apply {
-        println(
-            this.toString()
-        )
-    }
+    val fileChooserTitle by derivedStateOf { title(fileChooser.dialogType == JFileChooser.SAVE_DIALOG) }
 
     var shouldShowFilePicker by mutableStateOf(false)
         private set
@@ -32,7 +28,7 @@ class ShareScreenState(
     fun onClickOpenStocking() {
         fileChooserType = JFileChooser.OPEN_DIALOG
         lastInvokedFilePicker = Picker.LOCAL
-        shouldShowFilePicker = !shouldShowFilePicker
+        shouldShowFilePicker = true
     }
 
 
@@ -48,7 +44,7 @@ class ShareScreenState(
                 Picker.SAVE -> funcResult(file.absolutePath)
             }
         }
-        shouldShowFilePicker = !shouldShowFilePicker
+        shouldShowFilePicker = false
     }
 
     private fun title(isSaveFile: Boolean): String {
@@ -58,7 +54,7 @@ class ShareScreenState(
     fun onClickSaveParsedStocking() {
         fileChooserType = JFileChooser.SAVE_DIALOG
         lastInvokedFilePicker = Picker.SAVE
-        shouldShowFilePicker = !shouldShowFilePicker
+        shouldShowFilePicker = true
     }
 
 

@@ -1,7 +1,7 @@
 package data.util.implementations
 
 
-class InvoiceParser {
+object InvoiceParser {
     object PropertiesSupplier {
         const val parseSchemaSize = 99
         const val resultFileSuffix = ".mxl"

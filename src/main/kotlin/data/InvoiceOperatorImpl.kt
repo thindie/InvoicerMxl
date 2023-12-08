@@ -248,10 +248,6 @@ class InvoiceOperatorImpl @Inject constructor(
     }
 
 
-    private fun filterToZeroStockGoodsList(parseIntoEntitiesList: List<Good>): List<Good> {
-        return parseIntoEntitiesList.filter { it.stock == 0 }
-    }
-
     private fun writeFile(stringToFile: String, fileName: String, iteration: Int, notifyError: () -> Unit) {
         try {
             Files.writeString(

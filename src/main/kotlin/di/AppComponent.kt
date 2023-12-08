@@ -5,7 +5,7 @@ import root.InvoicerApplication
 import ui.EntryPoint
 import javax.inject.Singleton
 
-@Component(modules = [FileViewSystemProviderModule::class, DispatcherProviderModule::class, ActionsRepositoryModule::class, PathProviderModule::class])
+@Component(modules = [FileViewSystemProviderModule::class, DispatcherProviderModule::class, RepositoriesModule::class, PathProviderModule::class])
 @Singleton
 interface AppComponent {
     companion object {

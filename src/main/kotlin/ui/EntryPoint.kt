@@ -15,6 +15,7 @@ import navigation.rememberNavController
 import root.InvoicerApplication
 import ui.feature_invoice.invoice
 import ui.feature_share.share
+import ui.theme.InvoicerAppTheme
 import javax.inject.Inject
 import javax.inject.Named
 import javax.swing.JFileChooser
@@ -36,7 +37,7 @@ class EntryPoint private constructor() : InvoicerApplication() {
 
 
     private fun onCreate() = application {
-        MaterialTheme {
+        InvoicerAppTheme {
             Window(
                 icon = rememberVectorPainter(Icons.Default.List),
                 state = rememberWindowState(width = 700.dp, height = 300.dp),

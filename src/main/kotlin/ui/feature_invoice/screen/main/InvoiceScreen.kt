@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.Button
 import androidx.compose.material.LinearProgressIndicator
 import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Text
@@ -26,6 +25,7 @@ import root.Application.Companion.viewModel
 import ui.FileChooserDialog
 import ui.feature_invoice.screen.composables.ControlPanel
 import ui.feature_invoice.screen.composables.InvoiceElement
+import ui.feature_invoice.screen.composables.SharePanel
 import ui.feature_invoice.screen.main.state.InvoiceScreenState
 import ui.feature_invoice.viewmodel.InvoiceScreenViewModel
 
@@ -50,11 +50,7 @@ fun InvoiceScreen(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Button(onClick = onClickShareStocks) {
-            Text("Поделиться наличием")
-        }
-        Spacer(modifier = modifier.height(12.dp))
-        Text(text = "current state is ${viewModelState.state.name}")
+        SharePanel(modifier = modifier, onClickShare = onClickShareStocks)
         Spacer(modifier = modifier.height(12.dp))
         AnimatedVisibility(viewModelState.state == Engine.STANDBY) {
             Column(
