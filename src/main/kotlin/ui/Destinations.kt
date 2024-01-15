@@ -1,6 +1,7 @@
 package ui
 
 object Destinations {
-    val invoice = "invoice"
-    val share = "share"
+    const val central = "invoice_central"
+    const val invoice = "invoice"
+    const val share = "share"
 }

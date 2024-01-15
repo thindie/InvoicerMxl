@@ -46,7 +46,7 @@ open class InvoicerApplication @Inject constructor(
         daggerAppComponent?.inject(this)
         setViewModel(invoiceScreenViewModel::class.java.kotlin, invoiceScreenViewModel)
         setViewModel(screenViewModel::class.java.kotlin, screenViewModel)
-        setViewModel(invoiceScreenViewModel::class.java.kotlin, invoiceFromCentralBaseViewModel)
+        setViewModel(invoiceFromCentralBaseViewModel::class.java.kotlin, invoiceFromCentralBaseViewModel)
     }
 
     private fun initDaggerComponent(): AppComponent {

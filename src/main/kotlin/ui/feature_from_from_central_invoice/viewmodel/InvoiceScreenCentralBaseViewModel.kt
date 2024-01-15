@@ -3,11 +3,11 @@ package ui.feature_from_from_central_invoice.viewmodel
 import data.util.ScopeProvider
 import domain.PathProvider
 import domain.entities.Engine
-import domain.usecase.invoice.ApplyAdditionFilePathUseCase
-import domain.usecase.invoice.ApplyInitialFilePathUseCase
-import domain.usecase.invoice.ApplyResultUseCase
-import domain.usecase.invoice.ObserveOperationsUseCase
-import domain.usecase.invoice.RequestActionsUseCase
+import domain.usecase.copy_central.ApplyCentralInvoicePathUseCase
+import domain.usecase.copy_central.ApplyInventarisationPathUseCase
+import domain.usecase.copy_central.ApplyResultCopyInvoiceUseCase
+import domain.usecase.copy_central.ObserveOperationsCopyInvoiceUseCase
+import domain.usecase.copy_central.RequestActionsCopyInvoiceUseCase
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.combine
@@ -21,11 +21,11 @@ import javax.inject.Singleton
 @Singleton
 class InvoiceScreenCentralBaseViewModel @Inject constructor(
     private val scopeProvider: ScopeProvider,
-    private val observeOperationsUseCase: ObserveOperationsUseCase,
-    private val applyInitialFilePathUseCase: ApplyInitialFilePathUseCase,
-    private val applyAdditionFilePathUseCase: ApplyAdditionFilePathUseCase,
-    private val applyResult: ApplyResultUseCase,
-    private val requestActionsUseCase: RequestActionsUseCase
+    private val observeOperationsUseCase: ObserveOperationsCopyInvoiceUseCase,
+    private val applyInitialFilePathUseCase: ApplyCentralInvoicePathUseCase,
+    private val applyAdditionFilePathUseCase: ApplyInventarisationPathUseCase,
+    private val applyResult: ApplyResultCopyInvoiceUseCase,
+    private val requestActionsUseCase: RequestActionsCopyInvoiceUseCase
 ) : ViewModel {
 
     private val _operationsState = MutableStateFlow(ModelState(state = Engine.STANDBY))
@@ -45,7 +45,7 @@ class InvoiceScreenCentralBaseViewModel @Inject constructor(
                 started = SharingStarted.WhileSubscribed(5_000L)
             )
 
-    fun onClickOpenLocalRating(path: String) {
+    fun onClickOpenCentralBaseInvoice(path: String) {
         _operationsState.update {
             it.copy(localFilePath = path)
         }
@@ -56,7 +56,7 @@ class InvoiceScreenCentralBaseViewModel @Inject constructor(
         }
     }
 
-    fun onClickOpenMergingRating(path: String) {
+    fun onClickOpenInventarisation(path: String) {
         _operationsState.update {
             it.copy(mergingFilePath = path)
         }

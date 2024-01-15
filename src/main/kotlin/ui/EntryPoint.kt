@@ -12,6 +12,7 @@ import data.util.SystemPropertyPathProvider
 import navigation.NavHost
 import navigation.rememberNavController
 import root.InvoicerApplication
+import ui.feature_from_from_central_invoice.invoiceCentral
 import ui.feature_invoice.invoice
 import ui.feature_share.share
 import ui.theme.InvoicerAppTheme
@@ -47,18 +48,21 @@ class EntryPoint private constructor() : InvoicerApplication() {
                 val navController = rememberNavController(Destinations.invoice)
                 val invoice = { navController.navigate(Destinations.invoice) }
                 val share = { navController.navigate(Destinations.share) }
+                val central = { navController.navigate(Destinations.central)}
 
                 NavHost(navController = navController) {
                     invoice(
                         fileChooser = fileChooser,
                         systemPropertyPathProvider = pathProvider,
-                        onNavigateShareStocks = share
+                        onNavigateShareStocks = share,
+                        onNavigateAddFromCentralInvoice = central
                     )
                     share(
                         pathProvider = pathProvider,
                         fileChooser = fileChooser,
                         onClickInvoice = invoice
                     )
+                    invoiceCentral(fileChooser = fileChooser, systemPropertyPathProvider = pathProvider, onNavigateShareStocks = share)
                 }
             }
         }

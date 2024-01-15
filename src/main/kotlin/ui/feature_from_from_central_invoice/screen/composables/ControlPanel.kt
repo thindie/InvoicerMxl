@@ -44,7 +44,7 @@ fun ControlPanel(
         ControlPanelMainButton(
             modifier,
             painter = rememberVectorPainter(Icons.Outlined.ShoppingCart),
-            title = "мои остатки",
+            title = "поступление склада",
             shouldShowAdditionalSection = operationState.localFilePath != null,
             onClickOpenButton = onClickBaseFilePick
         )
@@ -53,7 +53,7 @@ fun ControlPanel(
             ControlPanelMainButton(
                 modifier,
                 painter = rememberVectorPainter(Icons.Outlined.Home),
-                title = "остатки склада",
+                title = "инвентаризация",
                 onClickOpenButton = onClickExtraFilePick,
                 shouldShowAdditionalSection = operationState.mergingFilePath != null
             )

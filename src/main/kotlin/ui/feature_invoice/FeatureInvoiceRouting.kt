@@ -11,10 +11,13 @@ private const val INVOICE = "invoice"
 fun NavGraph.Companion.invoice(
     fileChooser: JFileChooser,
     systemPropertyPathProvider: SystemPropertyPathProvider,
-    onNavigateShareStocks: () -> Unit
+    onNavigateShareStocks: () -> Unit,
+    onNavigateAddFromCentralInvoice: () -> Unit
 ) {
     this.route(route = INVOICE) {
         val screenState = rememberInvoiceScreenState(fileChooser, systemPropertyPathProvider)
-        InvoiceScreen(state = screenState, onClickShareStocks = onNavigateShareStocks)
+        InvoiceScreen(state = screenState,
+            onClickShareStocks = onNavigateShareStocks,
+            onClickCentralRefilled = onNavigateAddFromCentralInvoice)
     }
 }

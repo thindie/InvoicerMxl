@@ -37,7 +37,8 @@ fun InvoiceScreen(
     modifier: Modifier = Modifier,
     viewModel: InvoiceScreenViewModel = viewModel(),
     state: InvoiceScreenState,
-    onClickShareStocks: () -> Unit
+    onClickShareStocks: () -> Unit,
+    onClickCentralRefilled: () -> Unit
 ) {
     val viewModelState by viewModel.operationsState.collectAsState()
 
@@ -53,7 +54,11 @@ fun InvoiceScreen(
         verticalArrangement = Arrangement.SpaceBetween,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        SharePanel(modifier = modifier, onClickShare = onClickShareStocks)
+        SharePanel(
+            modifier = modifier,
+            onClickShare = onClickShareStocks,
+            onCLickCentral = onClickCentralRefilled
+        )
         Row(horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
             Text(
                 "Заказываем!",
