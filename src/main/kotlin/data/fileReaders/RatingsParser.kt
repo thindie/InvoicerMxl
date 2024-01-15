@@ -32,6 +32,7 @@ class RatingsParser {
             return try {
                 val vendorCode = text
                     .substring(text.indexOf("ЦБ"), text.indexOf("ЦБ") + 8)
+                println(vendorCode)
                 Good(vendor_code = vendorCode, rank = 0, sales = 0, stock = 0)
             } catch (e: Exception) {
                 println(e.toString())
@@ -41,12 +42,14 @@ class RatingsParser {
         }
 
 
-        fun fromInventarisation(line: String): GoodTitle {
+        fun fromInventarisation(line: String): String {
             val title = line
                 .replaceAfter(":", replacement = "").trim()
                 .replace(":", " ").trim()
                 .replaceBefore(" ", replacement = "").trimStart()
-            return GoodTitle(title)
+                .replaceBefore("\t", replacement = "").trimStart()
+
+            return title
         }
 
 

@@ -11,6 +11,7 @@ import domain.Event
 import domain.OperationState
 import domain.PathProvider
 import domain.entities.Good
+import domain.entities.GoodTitle
 import domain.entities.PathType
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -28,7 +29,9 @@ import java.nio.file.Paths
 import java.util.*
 import javax.inject.Inject
 import javax.inject.Named
+import javax.inject.Singleton
 
+@Singleton
 class CopyInvoiceRepositoryImpl@Inject constructor(
     private val dispatcherProvider: DispatcherProvider,
     private val scopeProvider: ScopeProvider,
@@ -74,12 +77,14 @@ class CopyInvoiceRepositoryImpl@Inject constructor(
         when (pathType) {
             PathType.MINIMUM_REQUIRED -> {
                 actionsState.update {
+                    println(pathProvider.getProperty())
                     it.copy(initialPath = pathProvider.getProperty())
                 }
             }
 
             PathType.EXTENDED_OPERATION -> {
                 actionsState.update {
+                    println(pathProvider.getProperty())
                     it.copy(extendedPath = pathProvider.getProperty())
                 }
             }
@@ -97,27 +102,46 @@ class CopyInvoiceRepositoryImpl@Inject constructor(
     }
 
     override fun requestAction() {
+
         scopeProvider.getScope().launch {
             stateLoading()
             var isError = false
             if (actionsState.value.isOnlyLocalInvoice()) {
                 stateError()
             } else if (actionsState.value.isMergingInvoice()) {
-                val localStocksFile = readFile(actionsState.value.initialPath)
-                val parseIntoGoodsTitleList = localStocksFile.map {
+                //1 все имена из поступления
+                //2 все имена из инвентаризации
+                //3 соединяем только те, каких нет в инвентаризации
+                //4 парсим
+                //пишем
+
+                //1
+
+                val invoiceFile = readFile(actionsState.value.initialPath)
+
+
+                //2
+                val inventarisationFile = readFile(actionsState.value.initialPath)
+                val inventarisation = inventarisationFile.map {
                     RatingsParser.fromInventarisation(it)
                 }
 
-                val centralRating = readFile(actionsState.value.extendedPath)
-                    .filterNot {
-                        val title = RatingsParser.fromInventarisation(it)
-                        println(title)
-                        parseIntoGoodsTitleList.contains(title)
-                    }.mapNotNull {
-                        RatingsParser.fromInvoice(it)
-                    }
 
-                operateGoodsList(parseIntoEntitiesList = centralRating, entitiesLimit = InvoiceParser.PropertiesSupplier.parseSchemaSize)
+                val rating =
+                    invoiceFile.filter {
+                        val goodTitleOfInvoice = RatingsParser.fromInventarisation(it)
+                        !inventarisation.contains(goodTitleOfInvoice)
+                    }
+                        .filter {
+                            println(it)
+                            true
+                        }
+                        .
+                mapNotNull {
+                    RatingsParser.fromInvoice(it)
+                }
+
+                operateGoodsList(parseIntoEntitiesList = rating, entitiesLimit = InvoiceParser.PropertiesSupplier.parseSchemaSize)
 
             } else {
                 isError = true

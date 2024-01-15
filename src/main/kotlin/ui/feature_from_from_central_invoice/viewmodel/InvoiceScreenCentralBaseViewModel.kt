@@ -69,6 +69,7 @@ class InvoiceScreenCentralBaseViewModel @Inject constructor(
 
     fun onClickStartOperation(path: String) {
         scopeProvider.getScope().launch {
+            println("onStart")
             applyResult.invoke(
                 PathHolder(path)
             )
