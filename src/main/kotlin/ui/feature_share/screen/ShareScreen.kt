@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Add
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -37,7 +36,6 @@ fun ShareScreen(
     modifier: Modifier = Modifier,
     shareScreenViewModel: ShareScreenViewModel = viewModel(),
     shareScreenState: ShareScreenState,
-    onClickBack: () -> Unit
 ) {
 
     val state by shareScreenViewModel.operationsState.collectAsState()
@@ -54,17 +52,7 @@ fun ShareScreen(
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Spacer(modifier = modifier.height(12.dp))
-        Row(
-            modifier = modifier.fillMaxWidth().padding(horizontal = 20.dp), horizontalArrangement = Arrangement.Start
-        ) {
-            ControlPanelMainButton(
-                modifier,
-                title = "Back",
-                painter = rememberVectorPainter(Icons.Outlined.ArrowBack),
-                onClickBack,
-                shouldShowAdditionalSection = false
-            )
-        }
+
         Row(horizontalArrangement = Arrangement.SpaceEvenly, verticalAlignment = Alignment.CenterVertically) {
             Text(
                 "Выгружаемся!",

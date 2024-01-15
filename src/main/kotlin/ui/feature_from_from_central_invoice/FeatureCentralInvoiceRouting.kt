@@ -11,10 +11,9 @@ private const val INVOICE_CENTRAL = "invoice_central"
 fun NavGraph.Companion.invoiceCentral(
     fileChooser: JFileChooser,
     systemPropertyPathProvider: SystemPropertyPathProvider,
-    onNavigateShareStocks: () -> Unit
 ) {
     this.route(route = INVOICE_CENTRAL) {
         val screenState = rememberInvoiceFromCentralScreenState(fileChooser, systemPropertyPathProvider)
-        InvoiceFromCentralScreen(state = screenState, onClickShareStocks = onNavigateShareStocks)
+        InvoiceFromCentralScreen(state = screenState)
     }
 }

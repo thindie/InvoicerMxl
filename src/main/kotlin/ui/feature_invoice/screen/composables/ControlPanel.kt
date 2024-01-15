@@ -22,6 +22,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.VectorPainter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import ui.feature_invoice.viewmodel.InvoiceScreenViewModel
 
@@ -82,6 +83,6 @@ fun RowScope.ControlPanelMainButton(
             Icon(painter = (painter), contentDescription = null)
         }
 
-        Text(title, style = MaterialTheme.typography.headlineSmall.copy(color = MaterialTheme.colorScheme.onBackground))
+        Text(title, style = MaterialTheme.typography.titleMedium.copy(color = MaterialTheme.colorScheme.onBackground, fontWeight = FontWeight.Bold))
     }
 }
