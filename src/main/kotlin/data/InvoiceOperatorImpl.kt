@@ -204,7 +204,7 @@ class InvoiceOperatorImpl @Inject constructor(
         }
         // CB to Num Replace
         var i = 0
-        while (i < listGoodsToInvoice.size && i < 99) {
+        while (i < listGoodsToInvoice.size && i < parseSchemaSize) {
             val target = resultString.substring(
                 massiveOfNumbersOfNomeToReplace[i],
                 massiveOfNumbersOfNomeToReplace[i] + anchorLength
@@ -246,7 +246,6 @@ class InvoiceOperatorImpl @Inject constructor(
             }
         }
     }
-
 
     private fun writeFile(stringToFile: String, fileName: String, iteration: Int, notifyError: () -> Unit) {
         try {
