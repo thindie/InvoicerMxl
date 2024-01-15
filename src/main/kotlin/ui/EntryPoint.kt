@@ -1,7 +1,6 @@
 package ui
 
 import TITLE
-import androidx.compose.material.MaterialTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.ui.graphics.vector.rememberVectorPainter

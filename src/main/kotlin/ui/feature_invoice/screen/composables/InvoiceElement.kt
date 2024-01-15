@@ -28,6 +28,7 @@ import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 
 
@@ -68,7 +69,8 @@ fun InvoiceElement(
                 style = MaterialTheme.typography.titleMedium.copy(
                     color = MaterialTheme.colorScheme.background,
                     fontWeight = FontWeight.W900
-                )
+                ),
+                overflow = TextOverflow.Ellipsis
             )
 
             Row(modifier = modifier.height(24.dp)) {
