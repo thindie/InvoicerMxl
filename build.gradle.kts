@@ -21,6 +21,8 @@ dependencies {
     implementation(compose.desktop.currentOs)
     implementation("com.google.dagger:dagger:$daggerVersion")
     kapt("com.google.dagger:dagger-compiler:$daggerVersion")
+    @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
+    implementation(compose.material3)
 }
 
 tasks.withType<KotlinCompile> {

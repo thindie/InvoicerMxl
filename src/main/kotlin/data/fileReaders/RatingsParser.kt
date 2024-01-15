@@ -28,6 +28,32 @@ class RatingsParser {
             }
         }
 
+        fun fromInvoice(text: String): Good? {
+            return try {
+                val vendorCode = text
+                    .substring(text.indexOf("ЦБ"), text.indexOf("ЦБ") + 8)
+                println(vendorCode)
+                Good(vendor_code = vendorCode, rank = 0, sales = 0, stock = 0)
+            } catch (e: Exception) {
+                println(e.toString())
+                println(text)
+                emptyGood
+            }
+        }
+
+
+        fun fromInventarisation(line: String): String {
+            val title = line
+                .replaceAfter(":", replacement = "").trim()
+                .replace(":", " ").trim()
+                .replaceBefore(" ", replacement = "").trimStart()
+                .replaceBefore("\t", replacement = "").trimStart()
+
+            return title
+        }
+
+
+
         fun fromStocks(line: String): GoodTitle {
             val title = line
                 .replaceAfter(":", replacement = "").trim()
