@@ -1,6 +1,7 @@
 package root
 
 import di.AppComponent
+import ui.feature_from_from_central_invoice.viewmodel.InvoiceScreenCentralBaseViewModel
 import ui.feature_invoice.viewmodel.InvoiceScreenViewModel
 import ui.feature_share.viewmodel.ShareScreenViewModel
 import javax.inject.Inject
@@ -22,6 +23,9 @@ open class InvoicerApplication @Inject constructor(
     @Inject
     lateinit var screenViewModel: ShareScreenViewModel
 
+    @Inject
+    lateinit var invoiceFromCentralBaseViewModel: InvoiceScreenCentralBaseViewModel
+
     init {
         onCreate()
     }
@@ -42,6 +46,7 @@ open class InvoicerApplication @Inject constructor(
         daggerAppComponent?.inject(this)
         setViewModel(invoiceScreenViewModel::class.java.kotlin, invoiceScreenViewModel)
         setViewModel(screenViewModel::class.java.kotlin, screenViewModel)
+        setViewModel(invoiceScreenViewModel::class.java.kotlin, invoiceFromCentralBaseViewModel)
     }
 
     private fun initDaggerComponent(): AppComponent {
