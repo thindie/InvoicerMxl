@@ -11,11 +11,10 @@ private const val SHARE = "share"
 fun NavGraph.Companion.share(
     pathProvider: SystemPropertyPathProvider,
     fileChooser: JFileChooser,
-    onClickInvoice: () -> Unit,
 ) {
     this.route(route = SHARE) {
         val screenState =
             rememberShareScreenState(jFileChooser = fileChooser, systemPropertyPathProvider = pathProvider)
-        ShareScreen(onClickBack = onClickInvoice, shareScreenState = screenState)
+        ShareScreen(shareScreenState = screenState)
     }
 }
