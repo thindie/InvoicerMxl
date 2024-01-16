@@ -120,8 +120,9 @@ class CopyInvoiceRepositoryImpl@Inject constructor(
 
 
                 //2
-                val inventarisationFile = readFile(actionsState.value.initialPath)
+                val inventarisationFile = readFile(actionsState.value.extendedPath)
                 val inventarisation = inventarisationFile.map {
+                    println(it)
                     RatingsParser.fromInventarisation(it)
                 }
 
@@ -131,10 +132,6 @@ class CopyInvoiceRepositoryImpl@Inject constructor(
                         val goodTitleOfInvoice = RatingsParser.fromInventarisation(it)
                         !inventarisation.contains(goodTitleOfInvoice)
                     }
-                        .filter {
-                            println(it)
-                            true
-                        }
                         .
                 mapNotNull {
                     RatingsParser.fromInvoice(it)
