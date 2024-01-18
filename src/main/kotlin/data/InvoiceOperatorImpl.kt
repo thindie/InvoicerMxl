@@ -204,18 +204,25 @@ class InvoiceOperatorImpl @Inject constructor(
         }
         // CB to Num Replace
         var i = 0
-        while (i < listGoodsToInvoice.size && i < parseSchemaSize) {
-            val target = resultString.substring(
-                massiveOfNumbersOfNomeToReplace[i],
-                massiveOfNumbersOfNomeToReplace[i] + anchorLength
-            )
-            val vendorCode = try {
-                listGoodsToInvoice[i].vendor_code
-            } catch (e: IndexOutOfBoundsException) {
-                mockGood
+        while (i < parseSchemaSize) {
+            val target : String? =
+                try {
+                    resultString.substring(
+                        massiveOfNumbersOfNomeToReplace[i],
+                        massiveOfNumbersOfNomeToReplace[i] + anchorLength)
+                } catch (_: Exception){
+                    null
+                }
+
+            if (target != null){
+                val vendorCode = try {
+                    listGoodsToInvoice[i].vendor_code
+                } catch (e: IndexOutOfBoundsException) {
+                    mockGood
+                }
+                resultString = resultString.replace(target, vendorCode)
+                i++
             }
-            resultString = resultString.replace(target, vendorCode)
-            i++
         }
         return resultString
     }

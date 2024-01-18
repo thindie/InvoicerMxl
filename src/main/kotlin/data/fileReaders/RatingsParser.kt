@@ -1,5 +1,6 @@
 package data.fileReaders;
 
+import data.fileReaders.RatingsParser.Companion.replaceIndiciesFromStart
 import domain.entities.Good
 import domain.entities.GoodTitle
 import domain.entities.emptyGood
@@ -44,14 +45,12 @@ class RatingsParser {
 
         fun fromInventarisation(line: String): String {
             val title = line
-                .replaceAfter(":", replacement = "").trim()
+                .replaceAfter(":", replacement = " ").trim()
                 .replace(":", " ").trim()
-                .replaceBefore(" ", replacement = "").trimStart()
-                .replaceBefore("\t", replacement = "").trimStart()
+                .replaceIndiciesFromStart()
 
             return title
         }
-
 
 
         fun fromStocks(line: String): GoodTitle {
@@ -63,6 +62,10 @@ class RatingsParser {
         }
 
 
+        private fun String.replaceIndiciesFromStart(): String {
+
+            return replaceBeforeLast("\t", " ").trim()
+        }
     }
 }
 

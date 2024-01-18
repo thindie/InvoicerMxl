@@ -20,11 +20,7 @@ class InvoiceScreenState(
 
     private var lastInvokedFilePicker by mutableStateOf(Picker.NONE)
 
-    val fileChooserTitle by derivedStateOf { title(fileChooser.dialogType == JFileChooser.SAVE_DIALOG) }.apply {
-        println(
-            this.toString()
-        )
-    }
+    val fileChooserTitle by derivedStateOf { title(fileChooser.dialogType == JFileChooser.SAVE_DIALOG) }
 
     var shouldShowFilePicker by mutableStateOf(false)
         private set
