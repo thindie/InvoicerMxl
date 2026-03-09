@@ -1,18 +1,18 @@
 package com.thindie.invoicer
 
 import TITLE
-import androidx.compose.animation.AnimatedContent
+import androidx.compose.animation.*
+import androidx.compose.animation.core.tween
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
-import androidx.compose.runtime.CompositionLocalProvider
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Window
 import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
+import com.thindie.invoicer.application.Route
 import com.thindie.invoicer.application.Router
 import com.thindie.invoicer.application.uikit.LocalFileChooser
 import ui.theme.InvoicerAppTheme
@@ -36,9 +36,23 @@ fun main() = application {
 	  ) {
 		remember { ApplicationFlow(router).start() }
 		val routes by router.route.collectAsState(null)
+		var prev by remember { mutableStateOf<Pair<Route, Route?>?>(null) }
+		val isPop = routes != null && prev != null && routes!!.first == prev!!.second
+		LaunchedEffect(routes) { prev = routes }
 		if (routes != null) {
+		  val tween = tween<IntOffset>(durationMillis = 280)
 		  AnimatedContent(
 			targetState = routes!!.first,
+			transitionSpec = {
+			  if (isPop) {
+				slideInHorizontally(tween) { -it } + fadeIn(tween()) togetherWith
+					slideOutHorizontally(tween) { it } + fadeOut(tween())
+			  } else {
+				slideInHorizontally(tween) { it } + fadeIn(tween()) togetherWith
+					slideOutHorizontally(tween) { -it } + fadeOut(tween())
+			  }
+			},
+			label = "route"
 		  ) { route -> route.content.invoke() }
 		}
 	  }
