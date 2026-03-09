@@ -1,0 +1,50 @@
+package com.thindie.invoicer.application.uikit
+
+import androidx.compose.animation.AnimatedContent
+import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.MaterialTheme
+import androidx.compose.runtime.Composable
+import androidx.compose.ui.Alignment
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.unit.dp
+import com.thindie.invoicer.application.Command
+import com.thindie.invoicer.application.ScreenScope
+import com.thindie.invoicer.application.State
+
+
+@Composable
+fun <S : State, C : Command> ScreenScope<S, C>.AppScreen(
+  content: @Composable ScreenScope<S, C>.() -> Unit,
+) {
+  AnimatedContent(this) { screenScope ->
+	if (error.value != null) {
+	  ErrorMessage()
+	} else {
+	  Box(Modifier.fillMaxSize()) {
+		content(screenScope)
+		if (this@AppScreen.processing.value != null) {
+		  Box(Modifier
+			.fillMaxSize()
+			.background(
+			  Color.Transparent.copy(alpha = 0.3f)
+			)
+			.clickable(onClick = {} , enabled = false)
+		  ) {
+			CircularProgress(
+			  modifier = Modifier
+				.align(Alignment.Center)
+				.background(color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(20.dp))
+				.padding(16.dp)
+			)
+		  }
+		}
+	  }
+	}
+  }
+}

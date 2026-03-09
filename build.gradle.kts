@@ -2,9 +2,9 @@ import org.jetbrains.compose.desktop.application.dsl.TargetFormat
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 
 plugins {
-    kotlin("jvm") version "1.8.0"
-    kotlin("kapt") version "1.8.0"
-    id("org.jetbrains.compose") version "1.3.0"
+    kotlin("jvm") version "1.9.24"
+    kotlin("kapt") version "1.9.24"
+    id("org.jetbrains.compose") version "1.6.11"
 }
 
 group = "me.alex"
@@ -17,7 +17,7 @@ repositories {
 }
 
 dependencies {
-    val daggerVersion = "2.45"
+    val daggerVersion = "2.54"
     implementation(compose.desktop.currentOs)
     implementation("com.google.dagger:dagger:$daggerVersion")
     kapt("com.google.dagger:dagger-compiler:$daggerVersion")
