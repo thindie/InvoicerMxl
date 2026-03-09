@@ -2,94 +2,192 @@ package com.thindie.invoicer.application
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.Stable
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.saveable.rememberSaveable
+import kotlinx.coroutines.*
 import kotlinx.coroutines.channels.BufferOverflow
 import kotlinx.coroutines.flow.*
-import java.io.Serializable
 import java.util.*
+import kotlin.coroutines.cancellation.CancellationException
 
-class Router {
-    private val current = MutableStateFlow<List<Route>?>(null)
-    val currentFlow: Flow<Route?> = current.map { it?.lastOrNull() }
-    val poppedOut = MutableSharedFlow<Unit>()
+@Stable
+class Router(val onPopLast: () -> Unit) {
+  private val current = MutableStateFlow<List<Route>>(emptyList())
 
-    fun push(route: Route) {
-        current.update { if (it.isNullOrEmpty()) listOf(route) else it + route }
-    }
 
-    fun pop() {
-        current.update {
-            if (it.isNullOrEmpty()) {
-                poppedOut.tryEmit(Unit)
-                null
-            } else {
-                val route = current.value?.lastOrNull()
-                route?.dispose()
-                var newStack: List<Route>? = it.dropLast(1)
-                if (newStack.isNullOrEmpty()) {
-                    poppedOut.tryEmit(Unit)
-                    newStack = null
-                }
-                newStack
-            }
-        }
-    }
+  val route = current
+	.map { routes ->
+	  val lastRoute = routes.lastOrNull()
+	  val veryLastRoute = if (lastRoute != null) {
+		val reducedRoutes = routes.dropLast(1)
+		reducedRoutes.lastOrNull()
+	  } else null
+	  if (lastRoute == null) return@map null
+	 lastRoute to veryLastRoute
+	}
+	.filterNotNull()
+
+  @Stable
+  fun push(route: Route) {
+	current.update { it + route }
+  }
+
+  @Stable
+  fun pop() {
+	current.update { routes ->
+	  val route = routes.lastOrNull()
+	  if (route != null) {
+		val newStack = routes - route
+		route.dispose()
+		if (newStack.isEmpty()) {
+		  onPopLast()
+		}
+		newStack
+	  } else {
+		onPopLast()
+		emptyList()
+	  }
+	}
+  }
+
+  @Stable
+  fun removeAll(ids: Set<Route.Id>) {
+	current.update { routes ->
+	  routes.mapNotNull { route ->
+		if (route.id in ids) {
+		  route.dispose()
+		  null
+		} else {
+		  route
+		}
+	  }
+	}
+  }
 }
 
+@Stable
 interface Route {
-    val id: String
-    val content: @Composable () -> Unit
-    fun dispose()
+  val id: Id
+  val content: @Composable () -> Unit
+
+  @Stable
+  fun dispose()
+
+  @JvmInline
+  value class Id(val id: String)
 }
 
+@Stable
 object RouteFactory {
-    fun <C : Command, S : State> create(
-        state: () -> S,
-        wire: (C) -> S,
-        content: @Composable (S, MutableSharedFlow<C>) -> Unit
-    ): Route {
-        return object : Route {
-            private val commands = MutableSharedFlow<C>(replay = 1, onBufferOverflow = BufferOverflow.DROP_OLDEST)
 
-            override val id: String
-                get() = UUID.randomUUID().toString()
+  @Stable
+  fun <C : Command, S : State> create(
+	initialState: S,
+	execute: suspend (c: C, s: S) -> S,
+	errorMapper: (e: Throwable) -> ScreenScopeError = { _ ->
+	  ScreenScopeError(
+		message = "somenthing wrong",
+		actions = mapOf(),
+	  )
+	},
+	routeContent: @Composable ScreenScope<S, C>.() -> Unit
+  ): Route {
+	return object : Route {
 
-            override val content: @Composable () -> Unit
-                get() = {
-                    val saveableState = rememberSaveable { mutableStateOf<S?>(state()) }
+	  @Stable
+	  private val disposeCommand = MutableSharedFlow<C>(
+		replay = 0,
+		extraBufferCapacity = 1,
+		onBufferOverflow = BufferOverflow.DROP_OLDEST
+	  )
 
-                    LaunchedEffect(Unit) {
-                        commands
-                            .filterNot { it is Dispose }
-                            .collect {
-                                saveableState.value = wire(it)
-                            }
+	  @Stable
+	  var screenScope: ScreenScope<S, C>? = object : ScreenScope<S, C> {
 
-                        commands
-                            .filter { it is Dispose }
-                            .collect {
-                                saveableState.value = null
-                            }
+		private var scope: CoroutineScope? =
+		  CoroutineScope(SupervisorJob() + Dispatchers.Default + CoroutineExceptionHandler { _, _ -> })
 
-                    }
+		private val _state = mutableStateOf(initialState)
+		override val state: androidx.compose.runtime.State<S>
+		  get() = _state
 
-                    if (saveableState.value != null) {
-                        content(requireNotNull(saveableState.value), commands)
-                    }
-                }
+		private val _processing = mutableStateOf<C?>(null)
+		override val processing: androidx.compose.runtime.State<C?>
+		  get() = _processing
 
-            override fun dispose() {
-                commands.send(Dispose as C)
-            }
-        }
-    }
+		private val _error = mutableStateOf<ScreenScopeError?>(null)
+		override val error: androidx.compose.runtime.State<ScreenScopeError?>
+		  get() = _error
+
+		override fun send(command: C) {
+		  scope?.launch {
+			when (command) {
+			  ServiceCommand.Dispose -> {
+				dispose()
+				disposeCommand.tryEmit(command)
+			  }
+
+			  else -> {
+				if (_error.value == null) {
+				  try {
+					_processing.value = command
+					val newState = execute(command, _state.value)
+					_state.value = newState
+					_processing.value = null
+				  } catch (e: CancellationException) {
+					dispose()
+					disposeCommand.tryEmit(command)
+					throw e
+				  } catch (e: Throwable) {
+					val error = errorMapper(e)
+					_error.value = error
+					_processing.value = null
+				  }
+				} else {
+				  try {
+					_processing.value = command
+					val newState = execute(command, _state.value)
+					_state.value = newState
+					_error.value = null
+					_processing.value = null
+				  } catch (e: CancellationException) {
+					dispose()
+					disposeCommand.tryEmit(command)
+					throw e
+				  } catch (e: Throwable) {
+					val error = errorMapper(e)
+					_error.value = error
+					_processing.value = null
+				  }
+				}
+			  }
+			}
+		  }
+		}
+
+		override fun dispose() {
+		  scope?.cancel()
+		  scope = null
+		}
+	  }
+
+	  @Stable
+	  override val id: Route.Id = Route.Id(UUID.randomUUID().toString())
+
+
+	  override val content: @Composable () -> Unit = {
+		LaunchedEffect(initialState, id) {
+		  disposeCommand.collect { _ -> screenScope = null }
+		}
+		screenScope?.routeContent()
+	  }
+
+	  @Stable
+	  override fun dispose() {
+		disposeCommand.send(ServiceCommand.Dispose as C)
+	  }
+	}
+  }
 }
 
 fun <C : Command> MutableSharedFlow<C>.send(command: C) = tryEmit(command)
-
-interface Command
-
-private data object Dispose : Command
-
-interface State : Serializable
