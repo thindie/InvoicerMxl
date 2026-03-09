@@ -1,8 +1,8 @@
 package com.thindie.invoicer.ui.invoice
 
-import com.thindie.invoicer.ui.invoice.howto.howTo
+import com.thindie.invoicer.ui.invoice.simplechild.simpleChildInvoice
 
-suspend fun InvoiceFlow.mainExecute(command: InvoiceCommand, state: InvoiceState): InvoiceState {
+fun InvoiceFlow.mainExecute(command: InvoiceCommand, state: InvoiceState): InvoiceState {
   return when (command) {
 	InvoiceCommand.Back -> {
 	  finish(Unit)
@@ -13,8 +13,13 @@ suspend fun InvoiceFlow.mainExecute(command: InvoiceCommand, state: InvoiceState
 	  state
 	}
 
-	InvoiceCommand.HowTo -> {
-	  go(howTo)
+	InvoiceCommand.MergeChildMotherInvoice -> {
+	  state
+	  // todo
+	}
+
+	InvoiceCommand.SingleChildInvoice -> {
+	  go(simpleChildInvoice)
 	  state
 	}
   }

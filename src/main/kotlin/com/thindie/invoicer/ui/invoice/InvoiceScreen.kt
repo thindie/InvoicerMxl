@@ -14,8 +14,8 @@ fun ScreenScope<InvoiceState, InvoiceCommand>.InvoiceScreen(
 	  Text("Main ${state.value.invoiceMarker}")
 	}
 
-	Button(onClick = { send(InvoiceCommand.HowTo) }) {
-	  Text("How to Invoice")
+	Button(onClick = { send(InvoiceCommand.SingleChildInvoice) }) {
+	  Text("Пополни ассортимент")
 	}
   }
 }
