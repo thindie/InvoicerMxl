@@ -7,7 +7,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -16,7 +15,6 @@ import androidx.compose.ui.unit.dp
 import com.thindie.invoicer.application.Command
 import com.thindie.invoicer.application.ScreenScope
 import com.thindie.invoicer.application.State
-
 
 @Composable
 fun <S : State, C : Command> ScreenScope<S, C>.AppScreen(
@@ -39,7 +37,7 @@ fun <S : State, C : Command> ScreenScope<S, C>.AppScreen(
 			CircularProgress(
 			  modifier = Modifier
 				.align(Alignment.Center)
-				.background(color = MaterialTheme.colorScheme.onPrimary, shape = RoundedCornerShape(20.dp))
+				.background(color = InvoicerTheme.colors.accentPrimary, shape = RoundedCornerShape(20.dp))
 				.padding(16.dp)
 			)
 		  }

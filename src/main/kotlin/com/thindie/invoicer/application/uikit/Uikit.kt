@@ -10,7 +10,6 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material3.CircularProgressIndicator
-import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -32,8 +31,8 @@ fun Button(
   loading: Boolean? = null,
   enabled: Boolean = true,
 ) {
-  val colors = if (enabled) MaterialTheme.colorScheme.secondaryContainer else {
-	MaterialTheme.colorScheme.secondaryContainer.copy(alpha = ContentAlpha.disabled)
+  val colors = if (enabled) InvoicerTheme.colors.accentPrimary else {
+	InvoicerTheme.colors.accentPrimary.copy(alpha = ContentAlpha.disabled)
   }
   Row(
 	modifier = modifier
@@ -77,7 +76,7 @@ fun <S : State, C : Command> ScreenScope<S, C>.ErrorMessage() {
   ) {
 	Text(
 	  text = error.message,
-	  style = MaterialTheme.typography.bodyLarge,
+	  style = InvoicerTheme.typography.titleMedium,
 	)
 	Row(
 	  horizontalArrangement = Arrangement.spacedBy(8.dp),
@@ -118,16 +117,16 @@ fun SentenceRow(
   loading: Boolean?,
   onClick: (() -> Unit)? = null,
 ) {
-  val colorsPrimary = if (enabled) MaterialTheme.colorScheme.surfaceContainer else {
-	MaterialTheme.colorScheme.surfaceContainer.copy(alpha = ContentAlpha.disabled)
+  val colorsPrimary = if (enabled) InvoicerTheme.colors.backgroundPrimary else {
+	InvoicerTheme.colors.backgroundPrimary.copy(alpha = ContentAlpha.disabled)
   }
 
-  val tint = if (enabled) MaterialTheme.colorScheme.surfaceTint else {
-	MaterialTheme.colorScheme.surfaceTint.copy(alpha = ContentAlpha.disabled)
+  val tint = if (enabled) InvoicerTheme.colors.accentPrimary else {
+	InvoicerTheme.colors.accentPrimary.copy(alpha = ContentAlpha.disabled)
   }
 
-  val colorsSecondary = if (enabled) MaterialTheme.colorScheme.onPrimary else {
-	MaterialTheme.colorScheme.onPrimary.copy(alpha = ContentAlpha.disabled)
+  val colorsSecondary = if (enabled) InvoicerTheme.colors.backgroundSecondary else {
+	InvoicerTheme.colors.backgroundSecondary.copy(alpha = ContentAlpha.disabled)
   }
   Row(
 	modifier = modifier
@@ -187,21 +186,21 @@ fun SentenceRow(
 	  Column {
 		Text(
 		  text = title,
-		  style = MaterialTheme.typography.titleMedium,
-		  color = MaterialTheme.colorScheme.onPrimaryContainer
+		  style = InvoicerTheme.typography.titleMedium,
+		  color = InvoicerTheme.colors.contentPrimary
 		)
 		VSpacer(2.dp)
 		Text(
 		  text = subtitle,
-		  style = MaterialTheme.typography.labelSmall,
-		  color = MaterialTheme.colorScheme.onTertiaryContainer
+		  style = InvoicerTheme.typography.labelMedium,
+		  color = InvoicerTheme.colors.contentSecondary
 		)
 	  }
 	} else {
 	  Text(
 		text = title,
-		style = MaterialTheme.typography.titleLarge,
-		color = MaterialTheme.colorScheme.onPrimaryContainer
+		style = InvoicerTheme.typography.titleMedium,
+		color = InvoicerTheme.colors.contentPrimary
 	  )
 	}
   }
@@ -211,7 +210,7 @@ fun SentenceRow(
 fun CircularProgress(modifier: Modifier = Modifier) {
   CircularProgressIndicator(
 	modifier = modifier,
-	color = MaterialTheme.colorScheme.surfaceTint,
+	color = InvoicerTheme.colors.accentPrimary,
 	strokeWidth = 1.2.dp,
 	strokeCap = StrokeCap.Round
   )
