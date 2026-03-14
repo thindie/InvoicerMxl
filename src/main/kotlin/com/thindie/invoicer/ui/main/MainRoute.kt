@@ -13,8 +13,8 @@ val ApplicationFlow.main
   )
 
 private val mainScreenScopeError = ScreenScopeError(
-  message = "main error",
+  message = "Критическая ошибка, работа прервана",
   actions = mapOf(
-	ScreenScopeError.Actions.ButtonMain to MainCommand.Exit
+	ScreenScopeError.Actions.Common.ButtonMain to MainCommand.Exit
   )
 )
