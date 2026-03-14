@@ -17,8 +17,10 @@ import com.thindie.invoicer.application.Route
 import com.thindie.invoicer.application.Router
 import com.thindie.invoicer.application.uikit.InvoicerTheme
 import com.thindie.invoicer.application.uikit.LocalFileChooser
+import com.thindie.invoicer.application.uikit.LocalResourceDir
 import com.thindie.invoicer.application.uikit.LocalThemeSwitcher
 import com.thindie.invoicer.application.uikit.ThemeSwitcher
+import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.UIManager
 
@@ -27,8 +29,14 @@ fun main() = application {
   val router = remember { Router { this@application.exitApplication() } }
   val fileChooser = remember { JFileChooser() }
   val themeSwitcher = remember { ThemeSwitcher() }
+  val resourcesDir = remember {
+	System.getProperty("compose.application.resources_dir")
+	  ?.let { File(it) }
+	  ?: File("src/appData/common")
+  }
   CompositionLocalProvider(
-	LocalThemeSwitcher provides themeSwitcher
+	LocalThemeSwitcher provides themeSwitcher,
+	LocalResourceDir provides resourcesDir,
   ) {
 	val themeColors = LocalThemeSwitcher.current.themeFlow.collectAsState(null)
 	val isDark = when (themeColors.value) {
