@@ -130,10 +130,20 @@ object RouteFactory {
 			  else -> {
 				if (_error.value == null) {
 				  try {
-					_processing.value = command
+					// non-nervous loading treatment region
+					val loadingJob = launch {
+					  delay(200)
+					  _processing.value = command
+					}
 					val newState = execute(command, _state.value)
+					if (_processing.value != null) {
+					  delay(300)
+					}
+					loadingJob.cancel()
+					// end region
 					_state.value = newState
 					_processing.value = null
+
 				  } catch (e: CancellationException) {
 					dispose()
 					disposeCommand.tryEmit(command)
@@ -145,8 +155,17 @@ object RouteFactory {
 				  }
 				} else {
 				  try {
-					_processing.value = command
+					// non-nervous loading treatment region
+					val loadingJob = launch {
+					  delay(200)
+					  _processing.value = command
+					}
 					val newState = execute(command, _state.value)
+					if (_processing.value != null) {
+					  delay(300)
+					}
+					loadingJob.cancel()
+					// end region
 					_state.value = newState
 					_error.value = null
 					_processing.value = null
