@@ -7,5 +7,6 @@ val InvoiceFlow.simpleChildInvoice
   get() = RouteFactory.create(
 	initialState = SimpleChildInvoiceState(),
 	execute = this::simpleInvoiceExecute,
-	routeContent = { SimpleChildInvoiceScreen() }
+	routeContent = { SimpleChildInvoiceScreen() },
+	errorMapper = { e -> invoiceFlowErrors(e) }
   )
