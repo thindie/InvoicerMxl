@@ -14,7 +14,13 @@ class ApplicationFlow(private val router: Router) : ScreenFlow<Route, Unit>(rout
 
   fun startInvoiceFlow() {
 	InvoiceFlow(router)
-	  .onFinishBuilder { }
+	  .onFinishBuilder { result ->
+		when (result) {
+		  InvoiceFlow.Result.Success -> Unit
+		  InvoiceFlow.Result.Finish -> finish(Unit)
+		  InvoiceFlow.Result.Error -> Unit
+		}
+	  }
 	  .start()
   }
 }

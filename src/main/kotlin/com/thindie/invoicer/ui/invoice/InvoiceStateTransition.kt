@@ -5,11 +5,12 @@ import com.thindie.invoicer.ui.invoice.simplechild.simpleChildInvoice
 fun InvoiceFlow.mainExecute(command: InvoiceCommand, state: InvoiceState): InvoiceState {
   return when (command) {
 	InvoiceCommand.Back -> {
-	  finish(Unit)
+	  finish(InvoiceFlow.Result.Success)
 	  state
 	}
+
 	InvoiceCommand.Main -> {
-	  finish(Unit)
+	  finish(InvoiceFlow.Result.Success)
 	  state
 	}
 
