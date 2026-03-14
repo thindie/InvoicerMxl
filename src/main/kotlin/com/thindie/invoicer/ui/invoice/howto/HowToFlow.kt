@@ -1,17 +1,11 @@
-package com.thindie.invoicer.ui.invoice
+package com.thindie.invoicer.ui.invoice.howto
 
 import com.thindie.invoicer.application.*
 import com.thindie.invoicer.application.error.AppError
-import com.thindie.invoicer.ui.invoice.howto.HowToFlow
 
-class InvoiceFlow(private val router: Router) : ScreenFlow<Route, InvoiceFlow.Result>(router) {
+class HowToFlow(private val router: Router) : ScreenFlow<Route, HowToFlow.Result>(router) {
   override fun start() {
-	router.push(this.main)
-  }
-
-  fun startHowToFlow() {
-	HowToFlow(router)
-	  .start()
+	router.push(this.howToIntro)
   }
 
   fun invoiceFlowErrors(e: Throwable): ScreenScopeError =
@@ -58,12 +52,11 @@ class InvoiceFlow(private val router: Router) : ScreenFlow<Route, InvoiceFlow.Re
   private val invoiceFlowErrorsInternal = ScreenScopeError(
 	message = "Неожиданная ошибка",
 	actions = buildMap {
-	  put(ScreenScopeError.Actions.Common.ButtonMain, ServiceCommand.Prioritized { finish(Result.Success) })
+	  put(ScreenScopeError.Actions.Common.ButtonMain, ServiceCommand.Prioritized { finish(Result.Error) })
 	}
   )
 
   enum class Result {
-	Success,
 	Finish,
 	Error,
   }

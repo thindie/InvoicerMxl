@@ -3,7 +3,6 @@ package com.thindie.invoicer.ui.invoice.simplechild
 import com.thindie.invoicer.application.error.AppError
 import com.thindie.invoicer.application.uikit.openFileChooser
 import com.thindie.invoicer.ui.invoice.InvoiceFlow
-import com.thindie.invoicer.ui.invoice.howto.howTo
 import com.thindie.invoicer.ui.invoice.simplechild.confirm.simpleChildConfirmInvoice
 
 
@@ -28,7 +27,7 @@ suspend fun InvoiceFlow.simpleInvoiceExecute(
 	}
 
 	SimpleChildInvoiceCommand.HowTo -> {
-	  go(howTo)
+	  startHowToFlow()
 	  state
 	}
 

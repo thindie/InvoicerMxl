@@ -51,7 +51,7 @@ fun main() = application {
 	  ) {
 		Window(
 		  icon = rememberVectorPainter(Icons.Default.List),
-		  state = rememberWindowState(width = 700.dp, height = 400.dp),
+		  state = rememberWindowState(width = 700.dp, height = 954.dp),
 		  resizable = true,
 		  title = TITLE,
 		  onCloseRequest = ::exitApplication

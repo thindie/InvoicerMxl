@@ -7,6 +7,8 @@ import com.thindie.invoicer.application.error.AppError
 import kotlinx.coroutines.suspendCancellableCoroutine
 import org.jetbrains.skia.Image
 import java.io.File
+import java.nio.file.Files
+import java.nio.file.StandardCopyOption
 import javax.swing.JFileChooser
 import kotlin.coroutines.resume
 import kotlin.coroutines.resumeWithException
@@ -64,6 +66,21 @@ suspend fun getImageBitmap(resourcePath: String, resdir: File): ImageBitmap? {
 	} else {
 	  continuation.resumeWithException(IllegalStateException("Image could not be read"))
 	}
+  }
+}
+
+suspend fun extractRatingHelper(resdir: File, resourcePath: String, destination: File) {
+  return suspendCancellableCoroutine { continuation ->
+	val source = resdir.resolve(resourcePath)
+	if (!source.exists()) {
+	  continuation.resumeWithException(IllegalStateException("Directory $source does not exist."))
+	}
+	try {
+	  Files.copy(source.toPath(), destination.toPath(), StandardCopyOption.REPLACE_EXISTING)
+	} catch (e: Exception) {
+	  continuation.resumeWithException(AppError.FileWriteError(e.cause, e.message))
+	}
+	continuation.resume(Unit)
   }
 }
 
