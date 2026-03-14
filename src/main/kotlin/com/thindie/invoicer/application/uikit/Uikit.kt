@@ -9,6 +9,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
+import androidx.compose.material.IconButton
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.ArrowBack
+import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -17,11 +21,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.StrokeCap
 import androidx.compose.ui.graphics.painter.Painter
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.dp
-import com.thindie.invoicer.application.Command
-import com.thindie.invoicer.application.ScreenScope
-import com.thindie.invoicer.application.ScreenScopeError
-import com.thindie.invoicer.application.State
+import com.thindie.invoicer.application.*
 
 @Composable
 fun Button(
@@ -37,6 +39,7 @@ fun Button(
   Row(
 	modifier = modifier
 	  .height(52.dp)
+	  .widthIn(min = 328.dp)
 	  .background(color = colors, shape = RoundedCornerShape(20.dp))
 	  .clip(shape = RoundedCornerShape(20.dp))
 	  .clickable(
@@ -82,24 +85,43 @@ fun <S : State, C : Command> ScreenScope<S, C>.ErrorMessage() {
 	  horizontalArrangement = Arrangement.spacedBy(8.dp),
 	  modifier = Modifier.padding(top = 16.dp),
 	) {
-	  error.actions[ScreenScopeError.Actions.DismissMain]?.let { cmd ->
+	  error.actions[ScreenScopeError.Actions.Common.DismissMain]?.let { cmd ->
 		Button(
 		  text = "Dismiss",
-		  onClick = { send(cmd as C) },
+		  onClick = {
+			when {
+			  cmd as? ServiceCommand.Prioritized != null -> cmd.execute()
+			  else -> send(cmd as C)
+			}
+		  },
 		  loading = processing.value == cmd
 		)
 	  }
-	  error.actions[ScreenScopeError.Actions.ButtonSecondary]?.let { cmd ->
+	  error.actions[ScreenScopeError.Actions.Common.ButtonSecondaryRetry]?.let { cmd ->
+		val action = error.actions.keys.filterIsInstance<ScreenScopeError.Actions.Common>()
+		  .first { it is ScreenScopeError.Actions.Common.ButtonSecondaryRetry }
 		Button(
-		  text = "Secondary",
-		  onClick = { send(cmd as C) },
+		  text = action?.title.orEmpty(),
+		  onClick = {
+			when {
+			  cmd as? ServiceCommand.Prioritized != null -> cmd.execute()
+			  else -> send(cmd as C)
+			}
+		  },
 		  loading = processing.value == cmd
 		)
 	  }
-	  error.actions[ScreenScopeError.Actions.ButtonMain]?.let { cmd ->
+	  error.actions[ScreenScopeError.Actions.Common.ButtonMain]?.let { cmd ->
+		val action = error.actions.keys.filterIsInstance<ScreenScopeError.Actions.Common>()
+		  .first { it is ScreenScopeError.Actions.Common.ButtonMain }
 		Button(
-		  text = "Retry",
-		  onClick = { send(cmd as C) },
+		  text = action?.title.orEmpty(),
+		  onClick = {
+			when {
+			  cmd as? ServiceCommand.Prioritized != null -> cmd.execute()
+			  else -> send(cmd as C)
+			}
+		  },
 		  loading = processing.value == cmd
 		)
 	  }
@@ -214,4 +236,40 @@ fun CircularProgress(modifier: Modifier = Modifier) {
 	strokeWidth = 1.2.dp,
 	strokeCap = StrokeCap.Round
   )
+}
+
+@Composable
+fun TopAppBar(
+  title: String? = null,
+  onBack: (() -> Unit)? = null,
+  onClose: (() -> Unit)? = null,
+) {
+  Row(
+	modifier = Modifier.fillMaxWidth(),
+	horizontalArrangement = Arrangement.SpaceBetween,
+	verticalAlignment = Alignment.CenterVertically,
+  ) {
+	if (onBack != null) {
+	  IconButton(onClick = onBack) {
+		Icon(
+		  painter = rememberVectorPainter(image = Icons.Default.ArrowBack),
+		  contentDescription = null,
+		  tint = InvoicerTheme.colors.accentPrimary,
+		)
+	  }
+	}
+	Text(
+	  text = title.orEmpty(),
+	  style = InvoicerTheme.typography.titleSmall,
+	)
+	if (onClose != null) {
+	  IconButton(onClick = onClose) {
+		Icon(
+		  painter = rememberVectorPainter(image = Icons.Default.Close),
+		  contentDescription = null,
+		  tint = InvoicerTheme.colors.accentPrimary,
+		)
+	  }
+	}
+  }
 }

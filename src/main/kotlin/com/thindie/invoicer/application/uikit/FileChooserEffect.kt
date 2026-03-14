@@ -2,19 +2,23 @@ package com.thindie.invoicer.application.uikit
 
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.staticCompositionLocalOf
 import java.io.File
+import java.util.UUID
 import javax.swing.JFileChooser
 
 @Composable
 fun FileChooserEffect(
   fileChooserType: Int,
-  path: String,
+  path: String = "user.dir",
   title: String,
-  onResult: (File?) -> Unit
+  onResult: (File?) -> Unit,
+  onCancel: () -> Unit = {},
+  onError: () -> Unit = {}
 ) {
   val fileChooser = LocalFileChooser.current
-  LaunchedEffect(fileChooser) {
+  SideEffect {
 	with(fileChooser) {
 	  dialogType = fileChooserType
 	  currentDirectory = File(System.getProperty(path))
@@ -28,6 +32,12 @@ fun FileChooserEffect(
   when (fileChooser.showOpenDialog(null)) {
 	JFileChooser.APPROVE_OPTION -> {
 	  onResult.invoke(fileChooser.selectedFile)
+	}
+	JFileChooser.ERROR_OPTION -> {
+	  onError.invoke()
+	}
+	JFileChooser.CANCEL_OPTION -> {
+	  onCancel.invoke()
 	}
   }
 }

@@ -24,20 +24,25 @@ fun <S : State, C : Command> ScreenScope<S, C>.AppScreen(
 	if (error.value != null) {
 	  ErrorMessage()
 	} else {
-	  Box(Modifier.fillMaxSize()) {
+	  Box(
+		Modifier
+		  .fillMaxSize()
+		  .background(InvoicerTheme.colors.backgroundPrimary)
+	  ) {
 		content(screenScope)
 		if (this@AppScreen.processing.value != null) {
-		  Box(Modifier
+		  Box(
+			Modifier
 			.fillMaxSize()
 			.background(
 			  Color.Transparent.copy(alpha = 0.3f)
 			)
-			.clickable(onClick = {} , enabled = false)
+			.clickable(onClick = {}, enabled = false)
 		  ) {
 			CircularProgress(
 			  modifier = Modifier
 				.align(Alignment.Center)
-				.background(color = InvoicerTheme.colors.accentPrimary, shape = RoundedCornerShape(20.dp))
+				.background(color = InvoicerTheme.colors.backgroundPrimary, shape = RoundedCornerShape(20.dp))
 				.padding(16.dp)
 			)
 		  }
