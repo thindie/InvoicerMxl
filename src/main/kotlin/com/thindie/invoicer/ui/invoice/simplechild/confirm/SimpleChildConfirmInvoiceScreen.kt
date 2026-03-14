@@ -52,6 +52,7 @@ fun ScreenScope<SimpleChildConfirmInvoiceState, SimpleChildConfirmInvoiceCommand
 		color = InvoicerTheme.colors.successPrimary, width = 1.2.dp
 	  )
 	  WSpacer()
+	  val chooser = LocalFileChooser.current
 	  SentenceRow(
 		modifier = Modifier
 		  .border(border, RoundedCornerShape(20.dp))
@@ -60,14 +61,24 @@ fun ScreenScope<SimpleChildConfirmInvoiceState, SimpleChildConfirmInvoiceCommand
 		subtitle = subtitle,
 		painter = rememberVectorPainter(image = icon),
 		loading = false,
-		onClick = { send(SimpleChildConfirmInvoiceCommand.OpenSource) }
+		onClick = {
+		  val fileChooserType = JFileChooser.SAVE_DIALOG
+		  val title = "Открой рейтинг продаж"
+		  send(
+			SimpleChildConfirmInvoiceCommand.OpenSource(
+			  chooser = chooser,
+			  title = title,
+			  type = fileChooserType,
+			)
+		  )
+		}
 	  )
 	  VSpacer(12.dp)
 	  Text(
 		text = "Рейтинг:",
 		style = InvoicerTheme.typography.labelMedium,
 		color = InvoicerTheme.colors.contentSecondary,
-		)
+	  )
 	  Text(
 		text = state.value.source.path,
 		color = InvoicerTheme.colors.successPrimary,
@@ -86,14 +97,6 @@ fun ScreenScope<SimpleChildConfirmInvoiceState, SimpleChildConfirmInvoiceCommand
 		  )
 		},
 		text = "Продолжить"
-	  )
-	}
-	if (state.value.showChooser) {
-	  FileChooserEffect(
-		fileChooserType = JFileChooser.SAVE_DIALOG,
-		title = "Открой рейтинг продаж",
-		onResult = { send(SimpleChildConfirmInvoiceCommand.FilePickDone(requireNotNull(it))) },
-		onCancel = { send(SimpleChildConfirmInvoiceCommand.FilePickCancelled) }
 	  )
 	}
   }

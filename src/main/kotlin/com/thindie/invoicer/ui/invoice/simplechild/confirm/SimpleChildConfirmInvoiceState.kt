@@ -7,6 +7,5 @@ import java.io.File
 @Immutable
 data class SimpleChildConfirmInvoiceState(
   val source: File,
-  val showChooser: Boolean = false,
   val destination: File? = null,
 ): State

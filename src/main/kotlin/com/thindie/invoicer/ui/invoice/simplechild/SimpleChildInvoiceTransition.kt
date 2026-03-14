@@ -1,6 +1,9 @@
 package com.thindie.invoicer.ui.invoice.simplechild
 
+import com.thindie.invoicer.application.error.AppError
+import com.thindie.invoicer.application.uikit.openFileChooser
 import com.thindie.invoicer.ui.invoice.InvoiceFlow
+import com.thindie.invoicer.ui.invoice.howto.howTo
 import com.thindie.invoicer.ui.invoice.simplechild.confirm.simpleChildConfirmInvoice
 
 
@@ -24,25 +27,22 @@ suspend fun InvoiceFlow.simpleInvoiceExecute(
 	  state
 	}
 
-	SimpleChildInvoiceCommand.HowTo -> TODO()
-	SimpleChildInvoiceCommand.OpenSource -> {
-	  state.copy(
-		showChooser = true
-	  )
+	SimpleChildInvoiceCommand.HowTo -> {
+	  go(howTo)
+	  state
 	}
 
-	is SimpleChildInvoiceCommand.FilePickDone -> {
-	  state.copy(
-		showChooser = false,
-		source = command.file,
-	  )
-	}
-
-	is SimpleChildInvoiceCommand.FilePickCancelled -> {
-	  state.copy(
-		showChooser = false,
-		source = null,
-	  )
+	is SimpleChildInvoiceCommand.OpenSource -> {
+	  val file = try {
+		openFileChooser(
+		  fileChooserType = command.type,
+		  title = command.title,
+		  fileChooser = command.chooser
+		)
+	  } catch (e: Throwable) {
+		throw AppError.FileReadError(e.cause, e.message)
+	  }
+	  state.copy(source = file)
 	}
   }
 }
