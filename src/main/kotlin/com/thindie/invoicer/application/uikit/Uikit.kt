@@ -307,7 +307,9 @@ fun TopAppBar(
 	  }
 	} else HSpacer(12.dp)
 	if (description != null) {
-	  Column {
+	  Column(
+		horizontalAlignment = Alignment.CenterHorizontally,
+	  ) {
 		Text(
 		  text = title.orEmpty(),
 		  style = InvoicerTheme.typography.titleLarge,
