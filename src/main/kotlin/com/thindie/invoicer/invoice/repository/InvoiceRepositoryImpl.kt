@@ -78,6 +78,41 @@ class InvoiceRepositoryImpl(
 	return InvoiceSummary(result)
   }
 
+  override suspend fun writeMergeBranchInvoice(
+	inputPathParent: String,
+	inputPathChild: String,
+	outputPath: String,
+	limit: Int?
+  ): InvoiceSummary = withContext(Dispatchers.IO) {
+	val childGoodsSet = readFileLinesInternal(inputPathChild)
+	  .mapNotNull { extractGoodPartNumber(it) }
+	  .toSet()
+
+	val allGoods = readFileLinesInternal(inputPathParent)
+	  .mapNotNull { line ->
+		val partNumber = extractGoodPartNumber(line) ?: return@mapNotNull null
+		if (partNumber in childGoodsSet) return@mapNotNull null
+		fromRating(line)
+	  }
+
+	val summaryGoods = if (limit != null) allGoods.take(limit) else allGoods
+
+	if (summaryGoods.isEmpty()) {
+	  return@withContext InvoiceSummary(outputPath to 0)
+	}
+
+	try {
+	  val count = write(
+		goods = summaryGoods,
+		limit = parseSchemaSize,
+		path = outputPath,
+	  )
+	  InvoiceSummary(outputPath to count)
+	} catch (e: Throwable) {
+	  throw AppError.FileWriteError(e.cause, e.message)
+	}
+  }
+
   private fun splitGoodsInternal(
 	initialList: List<Good>,
 	limit: Int
@@ -190,6 +225,15 @@ class InvoiceRepositoryImpl(
 	} catch (_: Exception) {
 	  emptyGood
 	}
+  }
+
+  private fun extractGoodPartNumber(line: String): String? {
+	val colonIndex = line.indexOf(':')
+	if (colonIndex == -1) return null
+	val tabIndex = line.lastIndexOf('\t', colonIndex)
+	val start = if (tabIndex == -1) 0 else tabIndex + 1
+	val result = line.substring(start, colonIndex).trim()
+	return result.ifEmpty { null }
   }
 
   private fun newName(times: Int, fileName: String) =
