@@ -30,6 +30,7 @@ fun ScreenScope<MergeBranchesLimitInvoiceState, MergeBranchesLimitInvoiceCommand
 	) {
 	  TopAppBar(
 		title = "Финальная настройка",
+		description = "Лимит выборки",
 		onBack = { send(MergeBranchesLimitInvoiceCommand.Back) },
 		onClose = { send(MergeBranchesLimitInvoiceCommand.Finish) },
 	  )
@@ -53,7 +54,7 @@ fun ScreenScope<MergeBranchesLimitInvoiceState, MergeBranchesLimitInvoiceCommand
 			.border(border, RoundedCornerShape(20.dp))
 			.fillMaxWidth(),
 		  title = title,
-		  subtitle = "лимит",
+		  subtitle = option.value.first,
 		  painter = rememberVectorPainter(image = Icons.Default.Favorite).takeIf { selected },
 		  loading = false,
 		  enabled = !selected,

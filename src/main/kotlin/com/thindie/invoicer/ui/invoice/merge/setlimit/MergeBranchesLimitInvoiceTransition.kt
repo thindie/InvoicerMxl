@@ -1,7 +1,7 @@
 package com.thindie.invoicer.ui.invoice.merge.setlimit
 
 import com.thindie.invoicer.ui.invoice.InvoiceFlow
-import com.thindie.invoicer.ui.invoice.merge.processinvoice.mergeBranchesProcessInvoice
+import com.thindie.invoicer.ui.invoice.merge.setoffset.mergeBranchesOffsetInvoice
 
 
 suspend fun InvoiceFlow.mergeBranchesLimitInvoiceExecute(
@@ -16,7 +16,7 @@ suspend fun InvoiceFlow.mergeBranchesLimitInvoiceExecute(
 
 	is MergeBranchesLimitInvoiceCommand.Done -> {
 	  go(
-		mergeBranchesProcessInvoice(
+		mergeBranchesOffsetInvoice(
 		  source = state.source,
 		  branch = state.branch,
 		  destination = requireNotNull(state.destination),

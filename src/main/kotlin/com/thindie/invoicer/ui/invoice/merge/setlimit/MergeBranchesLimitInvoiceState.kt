@@ -10,9 +10,9 @@ data class MergeBranchesLimitInvoiceState(
   val branch: File,
   val destination: File,
   val options: List<LimitOption> = buildList {
-	add(LimitOption("1" to 100))
-	add(LimitOption("2" to 200))
-	add(LimitOption("3" to Int.MAX_VALUE))
+	add(LimitOption("Недельный заказ в ленивом варианте" to 100))
+	add(LimitOption("Уже лучше" to 200))
+	add(LimitOption("Рассчитываю ничего не потерять" to Int.MAX_VALUE))
   },
   val selected: LimitOption? = null,
 ) : State
