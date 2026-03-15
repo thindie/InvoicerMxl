@@ -193,8 +193,8 @@ fun SentenceRow(
 	  .background(color = colorsPrimary, shape = RoundedCornerShape(20.dp))
 	  .clip(shape = RoundedCornerShape(20.dp))
 	  .clickable(
-		enabled = if (onClick != null) enabled else false,
-		onClick = if (onClick != null) {
+		enabled = enabled,
+		onClick = if (onClick != null && enabled) {
 		  onClick
 		} else {
 		  {}
