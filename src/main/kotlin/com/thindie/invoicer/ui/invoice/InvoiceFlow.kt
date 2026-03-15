@@ -60,6 +60,16 @@ class InvoiceFlow(
 		  }
 		)
 
+		is AppError.WrongPreconditionsRequested -> ScreenScopeError(
+		  message = "Похоже что-то с лимитами или оффсетами. А может с ними обоими. Попробуй снять их.",
+		  actions = buildMap {
+			put(
+			  ScreenScopeError.Actions.Common.ButtonMain,
+			  ServiceCommand.Prioritized { finish(Result.Error) }
+			)
+		  }
+		)
+
 		is AppError.UnexpectedError -> invoiceFlowErrorsInternal
 	  }
 

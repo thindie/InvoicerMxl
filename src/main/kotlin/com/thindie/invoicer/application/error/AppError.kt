@@ -30,4 +30,9 @@ sealed class AppError: Exception() {
 	override val cause: Throwable?,
 	override val message: String?,
   ): AppError()
+
+  data class WrongPreconditionsRequested(
+	override val cause: Throwable?,
+	override val message: String?,
+  ): AppError()
 }
