@@ -16,8 +16,8 @@ suspend fun HowToFlow.howToIntroExecute(
 	}
 
 	is HowToInvoiceCommand.Next -> {
-	  val img = getImageBitmap("step_0.jpg", command.dir)
-	  go(howToStep0(img))
+	  val img = getImageBitmap(requireNotNull(state.imageRes), command.dir)
+	  go(howToStep0(img, designation))
 	  state
 	}
 
@@ -46,8 +46,8 @@ suspend fun HowToFlow.howToStep0Execute(
 	}
 
 	is HowToInvoiceCommand.Next -> {
-	  val img = getImageBitmap("step_1.jpg", command.dir)
-	  go(howToStep1(img))
+	  val img = getImageBitmap(requireNotNull(state.imageRes), command.dir)
+	  go(howToStep1(img, designation))
 	  state
 	}
 
@@ -67,8 +67,8 @@ suspend fun HowToFlow.howToStep1Execute(
 	}
 
 	is HowToInvoiceCommand.Next -> {
-	  val img = getImageBitmap("step_2.jpg", command.dir)
-	  go(howToStep2(img))
+	  val img = getImageBitmap(requireNotNull(state.imageRes), command.dir)
+	  go(howToStep2(img, designation))
 	  state
 	}
 

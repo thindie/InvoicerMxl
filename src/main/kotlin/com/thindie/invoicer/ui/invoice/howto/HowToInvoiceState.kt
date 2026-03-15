@@ -27,7 +27,7 @@ data class HowToIntroState(
 	append("\n")
 	append(HowToStrings.extraIntroImportantResolution)
   },
-  override val imageRes: String? = "appData/common/step_0.jpg",
+  override val imageRes: String? = "step_0.jpg",
   override val image: ImageBitmap? = null,
   override val primaryAction: String = HowToStrings.primaryIntro,
   override val backAction: String = HowToStrings.backFromIntro,
@@ -39,7 +39,7 @@ data class HowToStep0State(
   override val question: String = HowToStrings.questionStep0,
   override val answer: String? = HowToStrings.answerStep0,
   override val extraExplanation: String? = null,
-  override val imageRes: String? = "appData/common/step_1.jpg",
+  override val imageRes: String? = "step_1.jpg",
   override val image: ImageBitmap?,
   override val primaryAction: String = HowToStrings.primaryNext,
   override val backAction: String = HowToStrings.backOnStep,
@@ -50,7 +50,7 @@ data class HowToStep1State(
   override val question: String = HowToStrings.questionStep1,
   override val answer: String? = HowToStrings.answerStep1,
   override val extraExplanation: String? = null,
-  override val imageRes: String? = "appData/common/step_2.jpg",
+  override val imageRes: String? = "step_2.jpg",
   override val image: ImageBitmap?,
   override val primaryAction: String = HowToStrings.primaryNext,
   override val backAction: String = HowToStrings.backOnStep,

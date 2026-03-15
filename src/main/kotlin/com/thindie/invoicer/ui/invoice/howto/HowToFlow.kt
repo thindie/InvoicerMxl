@@ -4,8 +4,22 @@ import com.thindie.invoicer.application.*
 import com.thindie.invoicer.application.error.AppError
 
 class HowToFlow(private val router: Router) : ScreenFlow<Route, HowToFlow.Result>(router) {
+
+  private var designationNullable: HowToFlow.Designation? = null
+  val designation: Designation get() = requireNotNull(designationNullable)
+
+  enum class Designation {
+	UpdateStock,
+	MergeUpdateStock
+  }
+
+  fun withParams(type: Designation): HowToFlow {
+	designationNullable = type
+	return this
+  }
+
   override fun start() {
-	router.push(this.howToIntro)
+	router.push(this.howToIntro(designation))
   }
 
   fun invoiceFlowErrors(e: Throwable): ScreenScopeError =

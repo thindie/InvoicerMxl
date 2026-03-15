@@ -13,8 +13,15 @@ class InvoiceFlow(
 	router.push(this.main)
   }
 
-  fun startHowToFlow() {
+  fun startHowToSimpleInvoiceFlow() {
 	HowToFlow(router)
+	  .withParams(HowToFlow.Designation.UpdateStock)
+	  .start()
+  }
+
+  fun startHowToMergeInvoiceFlow() {
+	HowToFlow(router)
+	  .withParams(HowToFlow.Designation.MergeUpdateStock)
 	  .start()
   }
 
