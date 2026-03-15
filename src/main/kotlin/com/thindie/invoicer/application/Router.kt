@@ -90,7 +90,8 @@ object RouteFactory {
 		actions = mapOf(),
 	  )
 	},
-	routeContent: @Composable ScreenScope<S, C>.() -> Unit
+	initialCommand: InitialCommand<C>? = null, // strict invariant struggle with compiler's frontend - SAM
+	routeContent: @Composable ScreenScope<S, C>.() -> Unit,
   ): Route {
 	return object : Route {
 
@@ -189,6 +190,7 @@ object RouteFactory {
 		  scope = null
 		}
 	  }
+	  private set
 
 	  @Stable
 	  override val id: Route.Id = Route.Id(UUID.randomUUID().toString())
@@ -205,8 +207,16 @@ object RouteFactory {
 	  override fun dispose() {
 		disposeCommand.send(ServiceCommand.Dispose as C)
 	  }
+	  init {
+	    initialCommand?.let { initial -> screenScope?.send(initial.execute()) }
+	  }
 	}
   }
+  fun interface InitialCommand<C : Command> {
+	fun execute(): C
+  }
 }
+
+
 
 fun <C : Command> MutableSharedFlow<C>.send(command: C) = tryEmit(command)

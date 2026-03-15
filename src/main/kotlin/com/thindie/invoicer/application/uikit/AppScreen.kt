@@ -18,9 +18,13 @@ import com.thindie.invoicer.application.State
 
 @Composable
 fun <S : State, C : Command> ScreenScope<S, C>.AppScreen(
+  modifier: Modifier = Modifier,
   content: @Composable ScreenScope<S, C>.() -> Unit,
 ) {
-  AnimatedContent(this) { screenScope ->
+  AnimatedContent(
+	modifier = modifier.background(InvoicerTheme.colors.backgroundPrimary),
+	targetState = this
+  ) { screenScope ->
 	if (error.value != null) {
 	  ErrorMessage()
 	} else {
@@ -42,7 +46,7 @@ fun <S : State, C : Command> ScreenScope<S, C>.AppScreen(
 			CircularProgress(
 			  modifier = Modifier
 				.align(Alignment.Center)
-				.background(color = InvoicerTheme.colors.backgroundPrimary, shape = RoundedCornerShape(20.dp))
+				.background(color = InvoicerTheme.colors.backgroundSecondary, shape = RoundedCornerShape(20.dp))
 				.padding(16.dp)
 			)
 		  }

@@ -51,9 +51,9 @@ fun ScreenScope<SimpleChildInvoiceState, SimpleChildInvoiceCommand>.SimpleChildI
 	  }
 	  val icon = if (source == null) Icons.Outlined.Warning else Icons.Outlined.Done
 	  val border = if (source == null) BorderStroke(
-		color = InvoicerTheme.colors.errorPrimary, width = 1.2.dp
+		color = InvoicerTheme.colors.errorPrimary, width = 1.dp
 	  ) else BorderStroke(
-		color = InvoicerTheme.colors.successPrimary, width = 1.2.dp
+		color = InvoicerTheme.colors.successPrimary, width = 1.dp
 	  )
 	  WSpacer()
 	  val chooser = LocalFileChooser.current
@@ -89,7 +89,7 @@ fun ScreenScope<SimpleChildInvoiceState, SimpleChildInvoiceCommand>.SimpleChildI
 		text = "Как мне это сделать?",
 		textAlign = TextAlign.Center,
 		color = InvoicerTheme.colors.accentPrimary,
-		style = InvoicerTheme.typography.titleSmall
+		style = InvoicerTheme.typography.labelLarge
 	  )
 	  WSpacer()
 	  Button(

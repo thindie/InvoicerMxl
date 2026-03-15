@@ -9,24 +9,18 @@ suspend fun ApplicationFlow.mainExecute(mainCommand: MainCommand, mainState: Mai
 	  mainState
 	}
 
-	MainCommand.Confirm -> {
-	  when (mainState.selected) {
+	is MainCommand.Select -> {
+	  val toggled = mainState.options.find { it.id == mainCommand.id }
+	  when (toggled) {
 		is Option.Invoice -> {
 		  startInvoiceFlow()
 		  mainState
 		}
 
-		null -> {
+		else -> {
 		  mainState
 		}
 	  }
-	}
-
-	is MainCommand.ToggleOption -> {
-	  val toggled = mainCommand.id
-	  if (mainState.selected?.id == toggled) {
-		mainState.copy(selected = null)
-	  } else mainState.copy(selected = mainState.options.find { it.id == toggled })
 	}
   }
 }
