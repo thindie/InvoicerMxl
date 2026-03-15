@@ -7,7 +7,8 @@ interface InvoiceRepository {
     inputPathParent: String,
     inputPathChild: String,
     outputPath: String,
-    limit: Int?
+    limit: Int?,
+    offset: Int
   ): InvoiceSummary
 }
 

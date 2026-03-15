@@ -82,17 +82,27 @@ class InvoiceRepositoryImpl(
 	inputPathParent: String,
 	inputPathChild: String,
 	outputPath: String,
-	limit: Int?
+	limit: Int?,
+	offset: Int,
   ): InvoiceSummary = withContext(Dispatchers.IO) {
 	val childGoodsSet = readFileLinesInternal(inputPathChild)
 	  .mapNotNull { extractGoodPartNumber(it) }
 	  .toSet()
 
 	val allGoods = readFileLinesInternal(inputPathParent)
+	  .also {
+		if (it.size < offset) throw AppError.WrongPreconditionsRequested(
+		  null, "Offset bigger than goods size"
+		)
+	  }
+	  .drop(offset)
 	  .mapNotNull { line ->
-		val partNumber = extractGoodPartNumber(line) ?: return@mapNotNull null
-		if (partNumber in childGoodsSet) return@mapNotNull null
-		fromRating(line)
+		val parentPartNumber = extractGoodPartNumber(line) ?: return@mapNotNull null
+		if (parentPartNumber in childGoodsSet) {
+		  return@mapNotNull null
+		}
+		val good = fromRating(line)
+		good.takeIf { (it?.stock ?: 0) > 0 }
 	  }
 
 	val summaryGoods = if (limit != null) allGoods.take(limit) else allGoods
@@ -100,7 +110,6 @@ class InvoiceRepositoryImpl(
 	if (summaryGoods.isEmpty()) {
 	  return@withContext InvoiceSummary(outputPath to 0)
 	}
-
 	try {
 	  val count = write(
 		goods = summaryGoods,
