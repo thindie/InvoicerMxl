@@ -1,18 +1,20 @@
 package com.thindie.invoicer.ui.invoice.howto
 
+import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.text.ClickableText
 import androidx.compose.material.AlertDialog
-import androidx.compose.material.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Done
+import androidx.compose.material.icons.filled.Info
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ImageBitmap
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.thindie.invoicer.application.ScreenScope
 import com.thindie.invoicer.application.uikit.*
@@ -53,27 +55,27 @@ private fun <S : HowToInvoiceState> ScreenScope<S, HowToInvoiceCommand>.HowToScr
 
 	  WSpacer()
 
-	  Text(
-		modifier = Modifier
-		  .background(InvoicerTheme.colors.accentPrimary)
-		  .padding(8.dp),
-		text = state.question,
-		style = InvoicerTheme.typography.titleLarge,
-		color = InvoicerTheme.colors.onAccentPrimary,
-		textAlign = TextAlign.Start,
+
+	  SentenceRow(
+		title = state.question,
+		painter = rememberVectorPainter(Icons.Default.Info),
+		subtitle = null,
+		onClick = null,
+		enabled = false,
+		loading = false,
 	  )
 
 	  state.answer?.let { answer ->
 		VSpacer(8.dp)
-		Text(
-		  modifier = Modifier
-			.fillMaxWidth()
-			.background(InvoicerTheme.colors.backgroundSecondary)
-			.padding(8.dp),
-		  text = answer,
-		  style = InvoicerTheme.typography.bodyMedium,
-		  color = InvoicerTheme.colors.contentPrimary,
+		SentenceRow(
+		  title = "Что делаем:",
+		  painter = rememberVectorPainter(Icons.Default.Done),
+		  subtitle = answer,
+		  onClick = null,
+		  enabled = false,
+		  loading = false,
 		)
+		VSpacer(8.dp)
 	  }
 
 	  state.extraExplanation?.let { extra ->
@@ -82,25 +84,26 @@ private fun <S : HowToInvoiceState> ScreenScope<S, HowToInvoiceCommand>.HowToScr
 		var showDialog by remember { mutableStateOf(false) }
 		if (showDialog) {
 		  AlertDialog(
+			backgroundColor = InvoicerTheme.colors.backgroundSecondary,
 			onDismissRequest = {
 			  showDialog = false
 			  send(HowToInvoiceCommand.RequestRatingHelper(chooser, resDir))
 			},
 			shape = RoundedCornerShape(20.dp),
-			title = {
-			  Text(
-				modifier = Modifier
-				  .background(InvoicerTheme.colors.backgroundSecondary)
-				  .padding(8.dp),
-				text = "Внимание",
-				style = InvoicerTheme.typography.headlineSmall
+			text = {
+			  SentenceRow(
+				title = "Выбери место!",
+				painter = rememberVectorPainter(Icons.Default.Info),
+				subtitle = "\n После того, как кликнешь ок - будем выбирать место, куда положить выгрузку-хелпер. \n Не забудь про .ert",
+				onClick = null,
+				enabled = false,
+				loading = false,
 			  )
 			},
-			text = { Text("Сейчас будем выбирать место, куда положить выгрузку-хелпер. \n Не забудь про .ert") },
 			buttons = {
 			  Button(
 				modifier = Modifier.fillMaxWidth().padding(16.dp),
-				text = "Готов, сохранять в .ert это пушка!",
+				text = "Готов",
 				onClick = {
 				  showDialog = false
 				  send(HowToInvoiceCommand.RequestRatingHelper(chooser, resDir))
@@ -109,39 +112,34 @@ private fun <S : HowToInvoiceState> ScreenScope<S, HowToInvoiceCommand>.HowToScr
 			},
 		  )
 		}
-		ClickableText(
-		  modifier = Modifier
-			.fillMaxWidth()
-			.background(InvoicerTheme.colors.backgroundSecondary)
-			.padding(8.dp),
-		  text = extra,
-		  style = InvoicerTheme.typography.bodyMedium.copy(color = InvoicerTheme.colors.contentPrimary),
-		  onClick = { showDialog = true }
+		SentenceRow(
+		  modifier = Modifier.border(
+			BorderStroke(1.dp, InvoicerTheme.colors.backgroundSecondary),
+			shape = RoundedCornerShape(20.dp),
+		  ),
+		  title = "Чтобы не искать:",
+		  painter = rememberVectorPainter(Icons.Default.Add),
+		  subtitle = extra,
+		  onClick = { showDialog = true },
+		  enabled = true,
+		  loading = false,
 		)
 	  }
 
 	  state.image?.let { bitmap ->
-		VSpacer(16.dp)
 		StepImage(
 		  imageBitmap = bitmap,
 		  modifier = Modifier
 			.fillMaxWidth()
-			.heightIn(min = 200.dp, max = 900.dp),
+			.heightIn(min = 200.dp, max = 840.dp),
 		)
 	  }
-
 	  WSpacer()
-	  VSpacer(16.dp)
-	  Column(
-		modifier = Modifier.fillMaxWidth(),
-		horizontalAlignment = Alignment.CenterHorizontally,
-	  ) {
-		val file = LocalResourceDir.current
-		Button(
-		  text = state.primaryAction,
-		  onClick = { send(HowToInvoiceCommand.Next(file)) },
-		)
-	  }
+	  val file = LocalResourceDir.current
+	  Button(
+		text = state.primaryAction,
+		onClick = { send(HowToInvoiceCommand.Next(file)) },
+	  )
 	}
   }
 }
