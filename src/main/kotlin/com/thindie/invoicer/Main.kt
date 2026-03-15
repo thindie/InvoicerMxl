@@ -3,10 +3,12 @@ package com.thindie.invoicer
 import TITLE
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
+import androidx.compose.foundation.background
 import androidx.compose.foundation.isSystemInDarkTheme
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.List
 import androidx.compose.runtime.*
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.unit.IntOffset
 import androidx.compose.ui.unit.dp
@@ -64,6 +66,7 @@ fun main() = application {
 		  if (routes != null) {
 			val tween = tween<IntOffset>(durationMillis = 280)
 			AnimatedContent(
+			  modifier = Modifier.background(InvoicerTheme.colors.backgroundPrimary),
 			  targetState = routes!!.first,
 			  transitionSpec = {
 				if (isPop) {
