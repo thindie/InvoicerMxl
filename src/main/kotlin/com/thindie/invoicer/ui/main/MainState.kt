@@ -22,12 +22,21 @@ sealed interface Option {
   val subtitle: String?
   val image: ImageVector?
 
-  data class Invoice(
-	override val id: String,
-	override val title: String,
-	override val subtitle: String?,
-	override val image: ImageVector? = null,
-  ) : Option
+  sealed interface Invoice : Option {
+	data class Simple(
+	  override val id: String,
+	  override val title: String,
+	  override val subtitle: String?,
+	  override val image: ImageVector? = null,
+	) : Invoice
+
+	data class MergeBranches(
+	  override val id: String,
+	  override val title: String,
+	  override val subtitle: String?,
+	  override val image: ImageVector? = null,
+	) : Invoice
+  }
 
   data class Stub(
 	override val id: String,
@@ -39,7 +48,7 @@ sealed interface Option {
 
 private fun options() = buildList {
   add(
-	Option.Invoice(
+	Option.Invoice.Simple(
 	  id = UUID.randomUUID().toString(),
 	  title = "Сделать заказ",
 	  subtitle = null,
