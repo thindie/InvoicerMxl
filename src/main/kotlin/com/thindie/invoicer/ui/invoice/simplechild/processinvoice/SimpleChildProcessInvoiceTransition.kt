@@ -7,9 +7,24 @@ suspend fun InvoiceFlow.simpleInvoiceExecute(
   command: SimpleChildProcessInvoiceCommand,
   state: SimpleChildProcessInvoiceState
 ): SimpleChildProcessInvoiceState {
-  when (command) {
-	SimpleChildProcessInvoiceCommand.Back -> finish(InvoiceFlow.Result.Success)
-	SimpleChildProcessInvoiceCommand.Finish -> finish(InvoiceFlow.Result.Finish)
+  return when (command) {
+	SimpleChildProcessInvoiceCommand.Back -> {
+	  finish(InvoiceFlow.Result.Success)
+	  state
+	}
+	SimpleChildProcessInvoiceCommand.Finish -> {
+	  finish(InvoiceFlow.Result.Finish)
+	  state
+	}
+	is SimpleChildProcessInvoiceCommand.Process -> {
+	  val result = repository.writeSimpleChildInvoice(
+		inputPath = command.source.path,
+		outputPath = command.target.path
+	  )
+	  state.copy(
+		producedFiles = result.filesProduced,
+		outputPath = result.outputPath
+	  )
+	}
   }
-  return state
 }

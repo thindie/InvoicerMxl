@@ -35,7 +35,7 @@ fun Button(
   modifier: Modifier = Modifier,
   text: String,
   onClick: () -> Unit,
-  loading: Boolean = false, // Упростим до Boolean
+  loading: Boolean = false,
   enabled: Boolean = true,
 ) {
   val contentColor by animateColorAsState(
@@ -75,7 +75,7 @@ fun Button(
 	  CircularProgress(
 		modifier = Modifier.size(24.dp),
 	  )
-	  }
+	}
 
 	AnimatedVisibility(
 	  visible = !loading,
@@ -93,16 +93,24 @@ fun Button(
 }
 
 @Stable
-private fun Modifier.surface(
-  shape: Shape,
-  backgroundColor: Color,
-  border: BorderStroke?,
-  shadowElevation: Float,
+fun Modifier.surface(
+  shape: Shape = RoundedCornerShape(16.dp),
+  backgroundColor: Color = Color.Transparent,
+  border: BorderStroke? = null,
+  shadowElevation: Float = 0f,
+  enabled: Boolean = true,
+  onClick: (() -> Unit)? = null,
 ) = this
   .graphicsLayer(shadowElevation = shadowElevation, shape = shape, clip = false)
   .then(if (border != null) Modifier.border(border, shape) else Modifier)
   .background(color = backgroundColor, shape = shape)
   .clip(shape)
+  .clickable(
+	onClick = if (onClick != null && enabled) onClick else {
+	  { }
+	},
+	enabled = onClick != null && enabled,
+  )
 
 
 @Composable
@@ -111,6 +119,7 @@ fun <S : State, C : Command> ScreenScope<S, C>.ErrorMessage() {
   Column(
 	modifier = Modifier
 	  .fillMaxSize()
+	  .padding(16.dp)
 	  .verticalScroll(rememberScrollState()),
 	verticalArrangement = Arrangement.Center,
 	horizontalAlignment = Alignment.CenterHorizontally,
@@ -206,9 +215,9 @@ fun SentenceRow(
 	if (loading != null) {
 	  Crossfade(targetState = loading) { loading ->
 		if (loading) {
-		  CircularProgressIndicator(
+		  CircularProgress(
 			modifier = Modifier
-			  .size(24.dp)
+			  .size(24.dp),
 		  )
 		} else {
 		  if (painter == null) {

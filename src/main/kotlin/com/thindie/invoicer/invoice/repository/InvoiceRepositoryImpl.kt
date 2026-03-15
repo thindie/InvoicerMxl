@@ -55,8 +55,8 @@ class InvoiceRepositoryImpl(
 	}
   }
 
-  override suspend fun writeSimpleChildInvoice(inputPath: String, outputPath: String) {
-	withContext(Dispatchers.IO) {
+  override suspend fun writeSimpleChildInvoice(inputPath: String, outputPath: String): InvoiceSummary {
+	val result = outputPath to withContext(Dispatchers.IO) {
 	  val saleRating = readFileLinesInternal(inputPath)
 	  val goods = try {
 		saleRating
@@ -75,6 +75,7 @@ class InvoiceRepositoryImpl(
 		throw AppError.FileWriteError(e.cause, e.message)
 	  }
 	}
+	return InvoiceSummary(result)
   }
 
   private fun splitGoodsInternal(
@@ -153,8 +154,8 @@ class InvoiceRepositoryImpl(
 	path: String,
 	goods: List<Good>,
 	limit: Int
-  ) {
-	withContext(Dispatchers.IO) {
+  ): Int {
+	return withContext(Dispatchers.IO) {
 	  val dividedList = splitGoodsInternal(goods, limit)
 	  dividedList.forEachIndexed { times, dividedGoodsList ->
 		val mergeSchema = mergeShemaCache.value
@@ -168,6 +169,7 @@ class InvoiceRepositoryImpl(
 		  Charset.forName(parseCharset)
 		)
 	  }
+	  dividedList.size
 	}
   }
 

@@ -6,7 +6,9 @@ import java.io.File
 
 object InvoiceFlowModule {
   private const val BINARY_NAME = "st.dll"
-  private val resDir = File(System.getProperty("compose.application.resources.dir"))
+  private val resDir = System.getProperty("compose.application.resources_dir")
+	?.let { File(it) }
+	?: File("src/appData/common")
 
   val invoiceRepository: InvoiceRepository = InvoiceRepositoryImpl(
 	filename = BINARY_NAME,

@@ -2,9 +2,13 @@ package com.thindie.invoicer.ui.invoice
 
 import com.thindie.invoicer.application.*
 import com.thindie.invoicer.application.error.AppError
+import com.thindie.invoicer.invoice.repository.InvoiceRepository
 import com.thindie.invoicer.ui.invoice.howto.HowToFlow
 
-class InvoiceFlow(private val router: Router) : ScreenFlow<Route, InvoiceFlow.Result>(router) {
+class InvoiceFlow(
+  private val router: Router,
+  val repository: InvoiceRepository,
+) : ScreenFlow<Route, InvoiceFlow.Result>(router) {
   override fun start() {
 	router.push(this.main)
   }

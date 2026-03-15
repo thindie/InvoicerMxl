@@ -16,7 +16,7 @@ suspend fun InvoiceFlow.simpleInvoiceExecute(
 	  state
 	}
 	is SimpleChildConfirmInvoiceCommand.Done -> {
-	  go(simpleChildProcessInvoice())
+	  go(simpleChildProcessInvoice(state.source, requireNotNull(state.destination)))
 	  state
 	}
 	SimpleChildConfirmInvoiceCommand.Finish -> {

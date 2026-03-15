@@ -3,6 +3,7 @@ package com.thindie.invoicer
 import com.thindie.invoicer.application.Route
 import com.thindie.invoicer.application.Router
 import com.thindie.invoicer.application.ScreenFlow
+import com.thindie.invoicer.invoice.di.InvoiceFlowModule
 import com.thindie.invoicer.ui.invoice.InvoiceFlow
 import com.thindie.invoicer.ui.main.main
 
@@ -13,7 +14,7 @@ class ApplicationFlow(private val router: Router) : ScreenFlow<Route, Unit>(rout
   }
 
   fun startInvoiceFlow() {
-	InvoiceFlow(router)
+	InvoiceFlow(router, repository = InvoiceFlowModule.invoiceRepository)
 	  .onFinishBuilder { result ->
 		when (result) {
 		  InvoiceFlow.Result.Success -> Unit
