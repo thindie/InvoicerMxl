@@ -89,7 +89,7 @@ fun ScreenScope<SimpleChildInvoiceState, SimpleChildInvoiceCommand>.SimpleChildI
 		text = "Как мне это сделать?",
 		textAlign = TextAlign.Center,
 		color = InvoicerTheme.colors.accentPrimary,
-		style = InvoicerTheme.typography.titleSmall
+		style = InvoicerTheme.typography.labelLarge
 	  )
 	  WSpacer()
 	  Button(

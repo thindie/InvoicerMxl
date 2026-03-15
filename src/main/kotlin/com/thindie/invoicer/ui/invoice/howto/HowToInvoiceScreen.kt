@@ -58,8 +58,8 @@ private fun <S : HowToInvoiceState> ScreenScope<S, HowToInvoiceCommand>.HowToScr
 		  .background(InvoicerTheme.colors.accentPrimary)
 		  .padding(8.dp),
 		text = state.question,
-		style = InvoicerTheme.typography.headlineSmall,
-		color = InvoicerTheme.colors.contentPrimary,
+		style = InvoicerTheme.typography.titleLarge,
+		color = InvoicerTheme.colors.onAccentPrimary,
 		textAlign = TextAlign.Start,
 	  )
 
