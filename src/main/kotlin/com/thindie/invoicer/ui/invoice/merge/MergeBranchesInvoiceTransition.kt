@@ -32,12 +32,12 @@ suspend fun InvoiceFlow.simpleInvoiceExecute(
 	}
 
 	MergeBranchesInvoiceCommand.HowTo -> {
-	  startHowToFlow()
+	  startHowToSimpleInvoiceFlow()
 	  state
 	}
 
 	MergeBranchesInvoiceCommand.HowToMakeBranchGreat -> {
-	  error("Пока не умеем!")
+	  startHowToMergeInvoiceFlow()
 	  state
 	}
 
