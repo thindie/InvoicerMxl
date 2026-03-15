@@ -8,9 +8,9 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Done
 import androidx.compose.material.icons.filled.Edit
-import androidx.compose.material.icons.outlined.Done
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.outlined.Create
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -36,20 +36,20 @@ fun ScreenScope<SimpleChildConfirmInvoiceState, SimpleChildConfirmInvoiceCommand
 	  )
 	  val destination = state.value.destination
 	  val text = if (destination == null) {
-		"Куда сохраним?"
+		"Куда сохраним наш заказ из выбранного рейтинга?"
 	  } else {
-		"Выбран! : ${destination.path}"
+		"Я буду тут!"
 	  }
 	  val subtitle = if (destination == null) {
 		"если нужно изменить целевой рейтинг - вернись назад"
 	  } else {
-		null
+		destination.path
 	  }
-	  val icon = if (destination == null) Icons.Default.Edit else Icons.Outlined.Done
+	  val icon = if (destination == null) Icons.Default.Edit else Icons.Outlined.Create
 	  val border = if (destination == null) BorderStroke(
-		color = InvoicerTheme.colors.errorPrimary, width = 1.2.dp
+		color = InvoicerTheme.colors.errorPrimary, width = 1.dp
 	  ) else BorderStroke(
-		color = InvoicerTheme.colors.successPrimary, width = 1.2.dp
+		color = InvoicerTheme.colors.successPrimary, width = 1.dp
 	  )
 	  WSpacer()
 	  val chooser = LocalFileChooser.current
@@ -63,7 +63,7 @@ fun ScreenScope<SimpleChildConfirmInvoiceState, SimpleChildConfirmInvoiceCommand
 		loading = false,
 		onClick = {
 		  val fileChooserType = JFileChooser.SAVE_DIALOG
-		  val title = "Открой рейтинг продаж"
+		  val title = "Выбери путь сохранения выгрузки"
 		  send(
 			SimpleChildConfirmInvoiceCommand.OpenSource(
 			  chooser = chooser,
@@ -74,15 +74,21 @@ fun ScreenScope<SimpleChildConfirmInvoiceState, SimpleChildConfirmInvoiceCommand
 		}
 	  )
 	  VSpacer(12.dp)
-	  Text(
-		text = "Рейтинг:",
-		style = InvoicerTheme.typography.labelMedium,
-		color = InvoicerTheme.colors.contentSecondary,
-	  )
-	  Text(
-		text = state.value.source.path,
-		color = InvoicerTheme.colors.successPrimary,
-		style = InvoicerTheme.typography.bodyMedium,
+	  SentenceRow(
+		modifier = Modifier
+		  .border(
+			BorderStroke(
+			  color = InvoicerTheme.colors.backgroundSecondary, width = 1.2.dp
+			),
+			shape = RoundedCornerShape(20.dp)
+		  )
+		  .fillMaxWidth(),
+		title = "Выбран рейтинг продаж:",
+		subtitle = state.value.source.path,
+		painter = rememberVectorPainter(image = Icons.Default.Done),
+		loading = false,
+		onClick = null,
+		enabled = false
 	  )
 	  WSpacer()
 	  Button(
