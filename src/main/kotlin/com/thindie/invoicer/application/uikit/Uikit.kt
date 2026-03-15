@@ -1,12 +1,10 @@
 package com.thindie.invoicer.application.uikit
 
-import androidx.compose.animation.Crossfade
-import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
+import androidx.compose.animation.*
+import androidx.compose.foundation.*
+import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.ContentAlpha
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
@@ -16,12 +14,19 @@ import androidx.compose.material.icons.filled.Close
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.Stable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.Shape
 import androidx.compose.ui.graphics.StrokeCap
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.graphics.painter.Painter
 import androidx.compose.ui.graphics.vector.rememberVectorPainter
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.thindie.invoicer.application.*
 
@@ -30,42 +35,75 @@ fun Button(
   modifier: Modifier = Modifier,
   text: String,
   onClick: () -> Unit,
-  loading: Boolean? = null,
+  loading: Boolean = false, // Упростим до Boolean
   enabled: Boolean = true,
 ) {
-  val colors = if (enabled) InvoicerTheme.colors.accentPrimary else {
-	InvoicerTheme.colors.accentPrimary.copy(alpha = ContentAlpha.disabled)
-  }
-  Row(
+  val contentColor by animateColorAsState(
+	if (enabled) InvoicerTheme.colors.buttonContentPrimary
+	else InvoicerTheme.colors.buttonContentPrimary.copy(alpha = ContentAlpha.disabled)
+  )
+
+  val backgroundColor by animateColorAsState(
+	if (enabled) InvoicerTheme.colors.accentPrimary
+	else InvoicerTheme.colors.accentPrimary.copy(alpha = ContentAlpha.disabled)
+  )
+  Box(
 	modifier = modifier
 	  .height(52.dp)
 	  .widthIn(min = 328.dp)
-	  .background(color = colors, shape = RoundedCornerShape(20.dp))
-	  .clip(shape = RoundedCornerShape(20.dp))
-	  .clickable(
-		enabled = enabled,
-		onClick = onClick,
+	  .surface(
+		shape = RoundedCornerShape(16.dp),
+		backgroundColor = backgroundColor,
+		shadowElevation = 0f,
+		border = null
 	  )
-	  .padding(horizontal = 16.dp, vertical = 8.dp),
-	verticalAlignment = Alignment.CenterVertically,
-	horizontalArrangement = Arrangement.SpaceEvenly
+	  .clickable(
+		enabled = enabled && !loading,
+		indication = null,
+		interactionSource = remember { MutableInteractionSource() },
+		onClick = onClick
+	  )
+	  .fillMaxSize()
+	  .padding(horizontal = 24.dp),
+	contentAlignment = Alignment.Center
   ) {
-	if (loading != null) {
-	  Crossfade(targetState = loading) { loading ->
-		if (loading) {
-		  CircularProgress(
-			modifier = Modifier.size(24.dp)
-		  )
-		} else {
-		  Unit
-		}
+	AnimatedVisibility(
+	  visible = loading,
+	  enter = fadeIn(),
+	  exit = fadeOut()
+	) {
+	  CircularProgress(
+		modifier = Modifier.size(24.dp),
+	  )
 	  }
+
+	AnimatedVisibility(
+	  visible = !loading,
+	  enter = fadeIn(),
+	  exit = fadeOut()
+	) {
+	  Text(
+		text = text.uppercase(),
+		style = InvoicerTheme.typography.button,
+		color = contentColor,
+		textAlign = TextAlign.Center
+	  )
 	}
-	Text(
-	  text = text,
-	)
   }
 }
+
+@Stable
+private fun Modifier.surface(
+  shape: Shape,
+  backgroundColor: Color,
+  border: BorderStroke?,
+  shadowElevation: Float,
+) = this
+  .graphicsLayer(shadowElevation = shadowElevation, shape = shape, clip = false)
+  .then(if (border != null) Modifier.border(border, shape) else Modifier)
+  .background(color = backgroundColor, shape = shape)
+  .clip(shape)
+
 
 @Composable
 fun <S : State, C : Command> ScreenScope<S, C>.ErrorMessage() {
@@ -214,7 +252,7 @@ fun SentenceRow(
 		VSpacer(2.dp)
 		Text(
 		  text = subtitle,
-		  style = InvoicerTheme.typography.labelMedium,
+		  style = InvoicerTheme.typography.bodyMedium,
 		  color = InvoicerTheme.colors.contentSecondary
 		)
 	  }
@@ -241,6 +279,7 @@ fun CircularProgress(modifier: Modifier = Modifier) {
 @Composable
 fun TopAppBar(
   title: String? = null,
+  description: String? = null,
   onBack: (() -> Unit)? = null,
   onClose: (() -> Unit)? = null,
 ) {
@@ -257,11 +296,28 @@ fun TopAppBar(
 		  tint = InvoicerTheme.colors.accentPrimary,
 		)
 	  }
+	} else HSpacer(12.dp)
+	if (description != null) {
+	  Column {
+		Text(
+		  text = title.orEmpty(),
+		  style = InvoicerTheme.typography.titleLarge,
+		  color = InvoicerTheme.colors.contentSecondary,
+		)
+		VSpacer(2.dp)
+		Text(
+		  text = description,
+		  style = InvoicerTheme.typography.labelLarge,
+		  color = InvoicerTheme.colors.accentPrimary,
+		)
+	  }
+	} else {
+	  Text(
+		text = title.orEmpty(),
+		style = InvoicerTheme.typography.titleLarge,
+		color = InvoicerTheme.colors.contentSecondary,
+	  )
 	}
-	Text(
-	  text = title.orEmpty(),
-	  style = InvoicerTheme.typography.titleSmall,
-	)
 	if (onClose != null) {
 	  IconButton(onClick = onClose) {
 		Icon(
@@ -270,6 +326,6 @@ fun TopAppBar(
 		  tint = InvoicerTheme.colors.accentPrimary,
 		)
 	  }
-	}
+	} else HSpacer(12.dp)
   }
 }
