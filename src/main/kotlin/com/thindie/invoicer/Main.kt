@@ -1,6 +1,5 @@
 package com.thindie.invoicer
 
-import TITLE
 import androidx.compose.animation.*
 import androidx.compose.animation.core.tween
 import androidx.compose.foundation.background
@@ -25,6 +24,8 @@ import com.thindie.invoicer.application.uikit.ThemeSwitcher
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.UIManager
+
+private const val TITLE = "Invoicer MXL 1C 7.7"
 
 fun main() = application {
   UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
