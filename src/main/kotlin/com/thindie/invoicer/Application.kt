@@ -16,11 +16,7 @@ import androidx.compose.ui.window.application
 import androidx.compose.ui.window.rememberWindowState
 import com.thindie.invoicer.application.Route
 import com.thindie.invoicer.application.Router
-import com.thindie.invoicer.application.uikit.InvoicerTheme
-import com.thindie.invoicer.application.uikit.LocalFileChooser
-import com.thindie.invoicer.application.uikit.LocalResourceDir
-import com.thindie.invoicer.application.uikit.LocalThemeSwitcher
-import com.thindie.invoicer.application.uikit.ThemeSwitcher
+import com.thindie.invoicer.application.uikit.*
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.UIManager
@@ -33,7 +29,7 @@ fun main() = application {
   val fileChooser = remember { JFileChooser() }
   val themeSwitcher = remember { ThemeSwitcher() }
   val resourcesDir = remember {
-	System.getProperty("compose.application.resources_dir")
+	System.getProperty("compose.application.resources.dir")
 	  ?.let { File(it) }
 	  ?: File("src/appData/common")
   }
@@ -86,3 +82,4 @@ fun main() = application {
 	}
   }
 }
+

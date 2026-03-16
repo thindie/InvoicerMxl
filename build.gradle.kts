@@ -30,7 +30,7 @@ compose.desktop {
 	buildTypes.release.proguard {
 	  isEnabled.set(false)
 	}
-	mainClass = "Mainkt"
+	mainClass = "com.thindie.invoicer.ApplicationKt"
 	nativeDistributions {
 	  vendor = "thindie"
 	  copyright = "2026 thindie"
