@@ -1,12 +1,12 @@
 package com.thindie.invoicer.ui.invoice
 
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.Build
+import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Stable
 import com.thindie.invoicer.application.State
 import com.thindie.invoicer.ui.main.Option
-import java.util.UUID
+import java.util.*
 
 @Stable
 data class InvoiceState(
@@ -15,7 +15,7 @@ data class InvoiceState(
 
 private fun options() = buildList {
   add(
-	Option.Invoice(
+	Option.Invoice.Simple(
 	  id = UUID.randomUUID().toString(),
 	  title = "Сделать простой заказ по своим продажам",
 	  subtitle = "пробуем восполнить ассортимент",
@@ -23,11 +23,11 @@ private fun options() = buildList {
 	)
   )
   add(
-	Option.Stub(
+	Option.Invoice.MergeBranches(
 	  id = UUID.randomUUID().toString(),
-	  title = "В разработке",
+	  title = "Прокачай продажи!",
 	  subtitle = "Здесь сможем сливать воедино несколько рейтингов продаж из разных филиалов",
-	  image = Icons.Default.Build
+	  image = Icons.Default.Refresh
 	)
   )
 }

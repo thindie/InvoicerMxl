@@ -1,4 +1,0 @@
-package root
-
-
-interface ViewModel

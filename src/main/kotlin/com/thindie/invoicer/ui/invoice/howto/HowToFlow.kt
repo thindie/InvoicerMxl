@@ -4,8 +4,22 @@ import com.thindie.invoicer.application.*
 import com.thindie.invoicer.application.error.AppError
 
 class HowToFlow(private val router: Router) : ScreenFlow<Route, HowToFlow.Result>(router) {
+
+  private var designationNullable: Designation? = null
+  val designation: Designation get() = requireNotNull(designationNullable)
+
+  enum class Designation {
+	UpdateStock,
+	MergeUpdateStock
+  }
+
+  fun withParams(type: Designation): HowToFlow {
+	designationNullable = type
+	return this
+  }
+
   override fun start() {
-	router.push(this.howToIntro)
+	router.push(this.howToIntro(designation))
   }
 
   fun invoiceFlowErrors(e: Throwable): ScreenScopeError =
@@ -35,6 +49,16 @@ class HowToFlow(private val router: Router) : ScreenFlow<Route, HowToFlow.Result
 
 		is AppError.Parse1CBinaryError -> ScreenScopeError(
 		  message = "Не удалось разобрать бинарный файл 1С, обратитесь к разработчику софта",
+		  actions = buildMap {
+			put(
+			  ScreenScopeError.Actions.Common.ButtonMain,
+			  ServiceCommand.Prioritized { finish(Result.Error) }
+			)
+		  }
+		)
+
+		is AppError.WrongPreconditionsRequested -> ScreenScopeError(
+		  message = "Похоже что-то с лимитами или оффсетами. А может с ними обоими. Попробуй снять их.",
 		  actions = buildMap {
 			put(
 			  ScreenScopeError.Actions.Common.ButtonMain,

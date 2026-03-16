@@ -27,7 +27,7 @@ suspend fun InvoiceFlow.simpleInvoiceExecute(
 	}
 
 	SimpleChildInvoiceCommand.HowTo -> {
-	  startHowToFlow()
+	  startHowToSimpleInvoiceFlow()
 	  state
 	}
 
