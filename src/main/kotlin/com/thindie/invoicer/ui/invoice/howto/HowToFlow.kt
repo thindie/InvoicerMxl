@@ -68,6 +68,7 @@ class HowToFlow(private val router: Router) : ScreenFlow<Route, HowToFlow.Result
 		)
 
 		is AppError.UnexpectedError -> invoiceFlowErrorsInternal
+		else -> invoiceFlowErrorsInternal
 	  }
 
 	  else -> invoiceFlowErrorsInternal

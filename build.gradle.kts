@@ -15,10 +15,15 @@ repositories {
   maven("https://maven.pkg.jetbrains.space/public/p/compose/dev")
 }
 
+val ktorVersion = "2.3.11"
+
 dependencies {
   implementation(compose.desktop.currentOs)
   @OptIn(org.jetbrains.compose.ExperimentalComposeLibrary::class)
   implementation(compose.material3)
+  implementation("io.ktor:ktor-client-core:${ktorVersion}")
+  implementation("io.ktor:ktor-client-auth:${ktorVersion}")
+  implementation("io.ktor:ktor-client-cio:${ktorVersion}")
 }
 
 tasks.withType<KotlinCompile> {

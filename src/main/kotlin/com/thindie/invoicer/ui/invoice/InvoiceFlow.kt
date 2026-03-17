@@ -71,6 +71,7 @@ class InvoiceFlow(
 		)
 
 		is AppError.UnexpectedError -> invoiceFlowErrorsInternal
+		else -> invoiceFlowErrorsInternal
 	  }
 
 	  else -> invoiceFlowErrorsInternal
