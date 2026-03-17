@@ -43,6 +43,9 @@ compose.desktop {
 	  packageName = "InvoicerMxl"
 	  packageVersion = "2.0.0"
 	  appResourcesRootDir.set(project.layout.projectDirectory.dir("src/appdata"))
+	  buildTypes.release.proguard {
+		configurationFiles.from(project.file("compose-desktop.pro"))
+	  }
 	}
   }
 }
