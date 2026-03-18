@@ -4,16 +4,13 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Build
 import androidx.compose.material.icons.filled.ShoppingCart
 import androidx.compose.runtime.Immutable
+import androidx.compose.runtime.Stable
 import androidx.compose.ui.graphics.vector.ImageVector
 import com.thindie.invoicer.application.State
 import java.util.*
 
 @Immutable
-data class MainState(
-  val greeting: String = "TODO greeting",
-  val options: List<Option> = options(),
-  val visibleHint: String? = null,
-) : State
+data class MainState(val options: List<Option> = options()) : State
 
 @Immutable
 sealed interface Option {
@@ -22,6 +19,7 @@ sealed interface Option {
   val subtitle: String?
   val image: ImageVector?
 
+  @Immutable
   sealed interface Invoice : Option {
 	data class Simple(
 	  override val id: String,
@@ -30,6 +28,7 @@ sealed interface Option {
 	  override val image: ImageVector? = null,
 	) : Invoice
 
+	@Immutable
 	data class MergeBranches(
 	  override val id: String,
 	  override val title: String,
@@ -38,6 +37,7 @@ sealed interface Option {
 	) : Invoice
   }
 
+  @Immutable
   data class Stub(
 	override val id: String,
 	override val title: String,
@@ -46,6 +46,7 @@ sealed interface Option {
   ) : Option
 }
 
+@Stable
 private fun options() = buildList {
   add(
 	Option.Invoice.Simple(

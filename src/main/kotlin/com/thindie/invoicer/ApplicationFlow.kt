@@ -5,12 +5,11 @@ import com.thindie.invoicer.application.Router
 import com.thindie.invoicer.application.ScreenFlow
 import com.thindie.invoicer.invoice.di.InvoiceFlowModule
 import com.thindie.invoicer.ui.invoice.InvoiceFlow
-import com.thindie.invoicer.ui.main.main
+import com.thindie.invoicer.ui.main.auth.auth
 
 class ApplicationFlow(private val router: Router) : ScreenFlow<Route, Unit>(router) {
   override fun start() {
-	val main = this.main
-	router.push(main)
+	router.push(auth())
   }
 
   fun startInvoiceFlow() {

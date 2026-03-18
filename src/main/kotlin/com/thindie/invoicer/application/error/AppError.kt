@@ -35,4 +35,9 @@ sealed class AppError: Exception() {
 	override val cause: Throwable?,
 	override val message: String?,
   ): AppError()
+
+  sealed class ServerError: AppError() {
+	data object RestrictedByOwner: ServerError()
+	data object TimeOut: ServerError()
+  }
 }
