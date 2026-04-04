@@ -17,11 +17,12 @@ import androidx.compose.ui.window.rememberWindowState
 import com.thindie.invoicer.application.Route
 import com.thindie.invoicer.application.Router
 import com.thindie.invoicer.application.uikit.*
+import com.thindie.invoicer.application.update.AppVersion
 import java.io.File
 import javax.swing.JFileChooser
 import javax.swing.UIManager
 
-private const val TITLE = "Invoicer MXL 1C 7.7"
+private const val TITLE = "Invoicer MXL 1C 7.7, version ${AppVersion.SEMVER}"
 
 fun main() = application {
   UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName())
