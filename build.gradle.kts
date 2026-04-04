@@ -24,6 +24,15 @@ dependencies {
   implementation("io.ktor:ktor-client-core:${ktorVersion}")
   implementation("io.ktor:ktor-client-auth:${ktorVersion}")
   implementation("io.ktor:ktor-client-cio:${ktorVersion}")
+
+  testImplementation(kotlin("test"))
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+  testImplementation("io.mockk:mockk:1.13.11")
+  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+}
+
+tasks.test {
+  useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {
