@@ -70,7 +70,13 @@ private fun options() = buildList {
 }
 
 @Immutable
-data class AppUpdateOffer(
-  val remoteVersion: String,
-  val msiUrl: String,
-)
+sealed interface AppUpdateOffer {
+  @Immutable
+  data class Soft(
+	val remoteVersion: String,
+	val msiUrl: String,
+  ) : AppUpdateOffer
+
+  @Immutable
+  data object Success : AppUpdateOffer
+}

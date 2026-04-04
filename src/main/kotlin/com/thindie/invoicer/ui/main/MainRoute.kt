@@ -5,7 +5,7 @@ import com.thindie.invoicer.application.RouteFactory
 import com.thindie.invoicer.application.ScreenScopeError
 import com.thindie.invoicer.application.error.AppError
 
-fun ApplicationFlow.mainRoute(offer: AppUpdateOffer?) = RouteFactory.create(
+fun ApplicationFlow.mainRoute(offer: AppUpdateOffer.Soft?) = RouteFactory.create(
   initialState = MainState(updateOffer = offer),
   execute = this::mainExecute,
   routeContent = { MainScreen() },

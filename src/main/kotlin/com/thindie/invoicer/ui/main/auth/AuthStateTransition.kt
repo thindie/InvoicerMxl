@@ -24,7 +24,7 @@ suspend fun ApplicationFlow.authExecute(authCommand: AuthCommand, state: AuthSta
 
 		  go(
 			mainRoute(
-			  AppUpdateOffer(
+			  AppUpdateOffer.Soft(
 				remoteVersion = gate.remoteVersionRaw,
 				msiUrl = gate.msiUrl,
 			  )

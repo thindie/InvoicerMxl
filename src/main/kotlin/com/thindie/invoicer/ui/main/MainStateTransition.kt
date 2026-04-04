@@ -16,7 +16,7 @@ suspend fun ApplicationFlow.mainExecute(mainCommand: MainCommand, mainState: Mai
 	MainCommand.DismissAppUpdate -> mainState.copy(updateOffer = null)
 
 	is MainCommand.SaveAppInstaller -> {
-	  val offer = mainState.updateOffer ?: return mainState
+	  val offer = mainState.updateOffer as? AppUpdateOffer.Soft ?: return mainState
 	  val destination = openSaveFileChooser(
 		fileChooser = mainCommand.chooser,
 		suggestedFileName = mainCommand.suggestedFileName,
@@ -27,7 +27,7 @@ suspend fun ApplicationFlow.mainExecute(mainCommand: MainCommand, mainState: Mai
 	  } catch (e: IOException) {
 		throw AppError.FileWriteError(e.cause, e.message)
 	  }
-	  mainState.copy(updateOffer = null)
+	  mainState.copy(updateOffer = AppUpdateOffer.Success)
 	}
 
 	is MainCommand.Select -> {
