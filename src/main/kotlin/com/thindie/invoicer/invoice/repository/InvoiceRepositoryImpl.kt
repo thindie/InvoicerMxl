@@ -27,6 +27,33 @@ class InvoiceRepositoryImpl(
   val filePath: File,
 ) : InvoiceRepository {
 
+  companion object {
+	/**
+	 * Parses one line of the sales rating export (tab-separated, vendor code contains "ЦБ…").
+	 */
+	internal fun parseRatingLine(text: String): SparePart? {
+	  return try {
+		val data = Arrays
+		  .asList(*text.split("\\t".toRegex()).dropLastWhile { it.isEmpty() }
+			.toTypedArray())
+		val vendorCode = text
+		  .substring(text.indexOf("ЦБ"), text.indexOf("ЦБ") + LENGTH)
+		val rank = data[0].trim { it <= ' ' }
+		  .replace("\\.[0-9]00".toRegex(), "").toInt()
+		val sales = data[data.size - 2].trim { it <= ' ' }
+		  .replace("\\.[0-9]00".toRegex(), "").toInt()
+		val stock = data[data.size - 1].trim { it <= ' ' }
+		  .replace("\\.[0-9]00".toRegex(), "").toInt()
+		SparePart(vendorCode = vendorCode, rank = rank, sales = sales, stock = stock)
+	  } catch (_: Exception) {
+		emptySparePart
+	  }
+	}
+
+	internal fun saleRatingLinesForSimpleChildOrder(lines: List<String>): List<SparePart> =
+	  lines.mapNotNull { parseRatingLine(it) }.filter { it.stock <= 0 }
+  }
+
   private val mergeShemaCache = MutableStateFlow<String?>(null)
 
   override suspend fun readFileLines(path: String): List<String> {
@@ -60,7 +87,8 @@ class InvoiceRepositoryImpl(
 	  val goods = try {
 		saleRating
 		  .ifEmpty { null }
-		  ?.mapNotNull { fromRating(it) } ?: error("Рейтинг товаров не должен быть пустым")
+		  ?.let(::saleRatingLinesForSimpleChildOrder)
+		  ?: error("Рейтинг товаров не должен быть пустым")
 	  } catch (e: IllegalStateException) {
 		throw AppError.MalformedSaleRatingError(e.cause, e.message)
 	  }
@@ -100,7 +128,7 @@ class InvoiceRepositoryImpl(
 		if (parentPartNumber in childGoodsSet) {
 		  return@mapNotNull null
 		}
-		val good = fromRating(line)
+		val good = parseRatingLine(line)
 		good.takeIf { (it?.stock ?: 0) > 0 }
 	  }
 
@@ -213,25 +241,6 @@ class InvoiceRepositoryImpl(
 		)
 	  }
 	  dividedList.size
-	}
-  }
-
-  private fun fromRating(text: String): SparePart? {
-	return try {
-	  val data = Arrays
-		.asList(*text.split("\\t".toRegex()).dropLastWhile { it.isEmpty() }
-		  .toTypedArray())
-	  val vendorCode = text
-		.substring(text.indexOf("ЦБ"), text.indexOf("ЦБ") + 8)
-	  val rank = data[0].trim { it <= ' ' }
-		.replace("\\.[0-9]00".toRegex(), "").toInt()
-	  val sales = data[data.size - 2].trim { it <= ' ' }
-		.replace("\\.[0-9]00".toRegex(), "").toInt()
-	  val stock = data[data.size - 1].trim { it <= ' ' }
-		.replace("\\.[0-9]00".toRegex(), "").toInt()
-	  SparePart(vendorCode = vendorCode, rank = rank, sales = sales, stock = stock)
-	} catch (_: Exception) {
-	  emptySparePart
 	}
   }
 
