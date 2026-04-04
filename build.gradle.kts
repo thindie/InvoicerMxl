@@ -8,7 +8,7 @@ plugins {
 
 group = "com.thindie"
 // Keep in sync with com.thindie.invoicer.application.update.AppVersion.SEMVER
-version = "2.0.5"
+version = "2.0.6"
 
 repositories {
   google()
@@ -51,7 +51,7 @@ compose.desktop {
 	  copyright = "2026 thindie"
 	  targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
 	  packageName = "InvoicerMxl"
-	  packageVersion = "2.0.5"
+	  packageVersion = "2.0.6"
 	  appResourcesRootDir.set(project.layout.projectDirectory.dir("src/appdata"))
 	  buildTypes.release.proguard {
 		configurationFiles.from(project.file("compose-desktop.pro"))
