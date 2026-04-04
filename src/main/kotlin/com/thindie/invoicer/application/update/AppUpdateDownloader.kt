@@ -1,9 +1,10 @@
 package com.thindie.invoicer.application.update
 
 import com.thindie.invoicer.application.auth.newAuthenticatedWebdavClient
-import io.ktor.client.call.body
-import io.ktor.client.request.get
-import io.ktor.client.statement.HttpResponse
+import com.thindie.invoicer.application.error.AppError
+import io.ktor.client.call.*
+import io.ktor.client.request.*
+import io.ktor.client.statement.*
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import java.io.File
@@ -16,10 +17,23 @@ suspend fun downloadInstallerMsi(msiUrl: String, destination: File) {
 	withContext(Dispatchers.IO) {
 	  val response: HttpResponse = client.get(msiUrl)
 	  if (response.status.value !in 200..299) {
-		throw IOException("HTTP ${response.status.value} for $msiUrl")
+		throw AppError.ServerError.UpdateVersion
 	  }
-	  val bytes = response.body<ByteArray>()
-	  Files.write(destination.toPath(), bytes)
+	  val bytes = try {
+		response.body<ByteArray>()
+	  } catch (e: NoTransformationFoundException) {
+		throw AppError.ServerError.ResponseMalformed(e.cause, e.message, payload = response)
+	  } catch (e: DoubleReceiveException) {
+		throw AppError.ServerError.ResponseMalformed(e.cause, e.message, payload = response)
+	  }
+
+	  try {
+		Files.write(destination.toPath(), bytes)
+	  } catch (e: IOException) {
+		throw AppError.FileWriteError(e.cause, e.message)
+	  } catch (e: Throwable) {
+		throw AppError.UnexpectedError(e.cause, e.message)
+	  }
 	}
   }
 }
