@@ -7,6 +7,7 @@ plugins {
 }
 
 group = "com.thindie"
+// Keep in sync with com.thindie.invoicer.application.update.AppVersion.SEMVER
 version = "2.0"
 
 repositories {

@@ -4,13 +4,12 @@ import com.thindie.invoicer.ApplicationFlow
 import com.thindie.invoicer.application.RouteFactory
 import com.thindie.invoicer.application.ScreenScopeError
 
-val ApplicationFlow.main
-  get() = RouteFactory.create(
-	initialState = MainState(),
-	execute = this::mainExecute,
-	routeContent = { MainScreen() },
-	errorMapper = { _ -> mainScreenScopeError }
-  )
+fun ApplicationFlow.mainRoute(offer: AppUpdateOffer?) = RouteFactory.create(
+  initialState = MainState(updateOffer = offer),
+  execute = this::mainExecute,
+  routeContent = { MainScreen() },
+  errorMapper = { _ -> mainScreenScopeError }
+)
 
 private val mainScreenScopeError = ScreenScopeError(
   message = "Критическая ошибка, работа прервана",

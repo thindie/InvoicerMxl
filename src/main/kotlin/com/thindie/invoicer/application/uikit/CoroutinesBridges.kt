@@ -48,6 +48,36 @@ suspend fun openFileChooser(
   }
 }
 
+suspend fun openSaveFileChooser(
+  fileChooser: JFileChooser,
+  suggestedFileName: String,
+  title: String,
+): File? {
+  return suspendCancellableCoroutine { continuation ->
+	with(fileChooser) {
+	  dialogType = JFileChooser.SAVE_DIALOG
+	  dialogTitle = title
+	  fileSelectionMode = JFileChooser.FILES_ONLY
+	  isAcceptAllFileFilterUsed = true
+	  selectedFile = File(suggestedFileName)
+	}
+
+	when (fileChooser.showSaveDialog(null)) {
+	  JFileChooser.APPROVE_OPTION -> {
+		continuation.resume(fileChooser.selectedFile)
+	  }
+
+	  JFileChooser.ERROR_OPTION -> {
+		continuation.resumeWithException(IllegalStateException("Save dialog error"))
+	  }
+
+	  JFileChooser.CANCEL_OPTION -> {
+		continuation.resume(null)
+	  }
+	}
+  }
+}
+
 suspend fun getImageBitmap(resourcePath: String, resdir: File): ImageBitmap? {
   return suspendCancellableCoroutine { continuation ->
 	val file = resdir.resolve(resourcePath)

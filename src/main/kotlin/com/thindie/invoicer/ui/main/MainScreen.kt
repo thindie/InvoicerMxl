@@ -28,6 +28,48 @@ fun ScreenScope<MainState, MainCommand>.MainScreen(
 		.padding(16.dp),
 	  horizontalAlignment = Alignment.CenterHorizontally
 	) {
+	  val offer = state.value.updateOffer
+	  if (offer != null) {
+		Column(
+		  modifier = Modifier
+			.fillMaxWidth()
+			.background(
+			  color = InvoicerTheme.colors.backgroundSecondary,
+			  shape = RoundedCornerShape(16.dp),
+			)
+			.padding(16.dp),
+		) {
+		  Text(
+			text = "Доступна новая версия: ${offer.remoteVersion}",
+			style = InvoicerTheme.typography.titleMedium,
+			color = InvoicerTheme.colors.contentPrimary,
+		  )
+		  VSpacer(12.dp)
+		  Row(
+			horizontalArrangement = Arrangement.spacedBy(12.dp),
+			verticalAlignment = Alignment.CenterVertically,
+		  ) {
+			val chooser = LocalFileChooser.current
+			Button(
+			  text = "Скачать MSI",
+			  onClick = {
+				val name = "InvoicerMxl-${sanitizeInstallerBaseName(offer.remoteVersion)}.msi"
+				send(
+				  MainCommand.SaveAppInstaller(
+					chooser = chooser,
+					suggestedFileName = name,
+				  )
+				)
+			  },
+			)
+			Button(
+			  text = "Позже",
+			  onClick = { send(MainCommand.DismissAppUpdate) },
+			)
+		  }
+		}
+		VSpacer(16.dp)
+	  }
 	  TopAppBar(
 		title = "Выбери желаемое",
 		description = "пока доступно только простое обновление ассортимента",
@@ -103,3 +145,7 @@ fun ScreenScope<MainState, MainCommand>.MainScreen(
 	}
   }
 }
+
+@Stable
+private fun sanitizeInstallerBaseName(version: String): String =
+  version.trim().replace(Regex("[\\\\/:*?\"<>|]"), "_")
