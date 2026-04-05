@@ -1,8 +1,10 @@
 package com.thindie.invoicer.ui.main.auth
 
 import com.thindie.invoicer.ApplicationFlow
-import com.thindie.invoicer.application.auth.authPassed
-import com.thindie.invoicer.ui.main.main
+import com.thindie.invoicer.application.auth.AuthGateResult
+import com.thindie.invoicer.application.auth.performAuthGate
+import com.thindie.invoicer.ui.main.AppUpdateOffer
+import com.thindie.invoicer.ui.main.mainRoute
 
 suspend fun ApplicationFlow.authExecute(authCommand: AuthCommand, state: AuthState): AuthState {
   return when (authCommand) {
@@ -10,13 +12,26 @@ suspend fun ApplicationFlow.authExecute(authCommand: AuthCommand, state: AuthSta
 	  finish(Unit)
 	  state
 	}
+
 	AuthCommand.Start -> {
-	  val passed = authPassed()
-	  if (passed) {
-		go(this.main)
-		state
-	  } else {
-		state.copy(showRestrictDialog = true)
+	  when (val gate = performAuthGate()) {
+		AuthGateResult.Allowed -> {
+		  go(mainRoute(null))
+		  state
+		}
+
+		is AuthGateResult.AllowedWithUpdate -> {
+
+		  go(
+			mainRoute(
+			  AppUpdateOffer.Soft(
+				remoteVersion = gate.remoteVersionRaw,
+				msiUrl = gate.msiUrl,
+			  )
+			)
+		  )
+		  state
+		}
 	  }
 	}
   }

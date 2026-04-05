@@ -28,6 +28,83 @@ fun ScreenScope<MainState, MainCommand>.MainScreen(
 		.padding(16.dp),
 	  horizontalAlignment = Alignment.CenterHorizontally
 	) {
+	  when (val offer = state.value.updateOffer) {
+		is AppUpdateOffer.Soft -> {
+		  Column(
+			modifier = Modifier
+			  .fillMaxWidth()
+			  .background(
+				color = InvoicerTheme.colors.backgroundSecondary,
+				shape = RoundedCornerShape(16.dp),
+			  )
+			  .padding(16.dp),
+		  ) {
+			Text(
+			  text = "Доступна новая версия: ${offer.remoteVersion}",
+			  style = InvoicerTheme.typography.titleMedium,
+			  color = InvoicerTheme.colors.contentPrimary,
+			)
+			VSpacer(12.dp)
+			Row(
+			  horizontalArrangement = Arrangement.spacedBy(12.dp),
+			  verticalAlignment = Alignment.CenterVertically,
+			) {
+			  val chooser = LocalFileChooser.current
+			  Button(
+				text = "Скачать MSI",
+				onClick = {
+				  val name = "InvoicerMxl-${sanitizeInstallerBaseName(offer.remoteVersion)}.msi"
+				  send(
+					MainCommand.SaveAppInstaller(
+					  chooser = chooser,
+					  suggestedFileName = name,
+					)
+				  )
+				},
+			  )
+			}
+		  }
+		  VSpacer(16.dp)
+		}
+
+		AppUpdateOffer.Success -> {
+		  Column(
+			modifier = Modifier
+			  .fillMaxWidth()
+			  .border(
+				width = 1.dp,
+				color = InvoicerTheme.colors.successPrimary,
+				shape = RoundedCornerShape(16.dp)
+			  )
+			  .background(
+				color = InvoicerTheme.colors.backgroundSecondary,
+				shape = RoundedCornerShape(16.dp),
+			  )
+			  .padding(16.dp),
+		  ) {
+			Text(
+			  text = "Успешно!",
+			  style = InvoicerTheme.typography.titleMedium,
+			  color = InvoicerTheme.colors.contentPrimary,
+			)
+			VSpacer(12.dp)
+			Row(
+			  horizontalArrangement = Arrangement.spacedBy(12.dp),
+			  verticalAlignment = Alignment.CenterVertically,
+			) {
+			  Button(
+				text = "Готово!",
+				onClick = {
+				  send(MainCommand.DismissAppUpdate)
+				},
+			  )
+			}
+		  }
+		  VSpacer(16.dp)
+		}
+
+		null -> Unit
+	  }
 	  TopAppBar(
 		title = "Выбери желаемое",
 		description = "пока доступно только простое обновление ассортимента",
@@ -103,3 +180,7 @@ fun ScreenScope<MainState, MainCommand>.MainScreen(
 	}
   }
 }
+
+@Stable
+private fun sanitizeInstallerBaseName(version: String): String =
+  version.trim().replace(Regex("[\\\\/:*?\"<>|]"), "_")

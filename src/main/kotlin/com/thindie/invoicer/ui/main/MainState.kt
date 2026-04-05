@@ -10,7 +10,10 @@ import com.thindie.invoicer.application.State
 import java.util.*
 
 @Immutable
-data class MainState(val options: List<Option> = options()) : State
+data class MainState(
+  val options: List<Option> = options(),
+  val updateOffer: AppUpdateOffer? = null,
+) : State
 
 @Immutable
 sealed interface Option {
@@ -64,4 +67,16 @@ private fun options() = buildList {
 	  image = Icons.Default.Build
 	)
   )
+}
+
+@Immutable
+sealed interface AppUpdateOffer {
+  @Immutable
+  data class Soft(
+	val remoteVersion: String,
+	val msiUrl: String,
+  ) : AppUpdateOffer
+
+  @Immutable
+  data object Success : AppUpdateOffer
 }

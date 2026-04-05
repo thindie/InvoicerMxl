@@ -7,7 +7,8 @@ plugins {
 }
 
 group = "com.thindie"
-version = "2.0"
+// Keep in sync with com.thindie.invoicer.application.update.AppVersion.SEMVER
+version = "2.0.6"
 
 repositories {
   google()
@@ -24,6 +25,15 @@ dependencies {
   implementation("io.ktor:ktor-client-core:${ktorVersion}")
   implementation("io.ktor:ktor-client-auth:${ktorVersion}")
   implementation("io.ktor:ktor-client-cio:${ktorVersion}")
+
+  testImplementation(kotlin("test"))
+  testImplementation("org.junit.jupiter:junit-jupiter:5.10.2")
+  testImplementation("io.mockk:mockk:1.13.11")
+  testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.8.1")
+}
+
+tasks.test {
+  useJUnitPlatform()
 }
 
 tasks.withType<KotlinCompile> {
@@ -41,8 +51,11 @@ compose.desktop {
 	  copyright = "2026 thindie"
 	  targetFormats(TargetFormat.Dmg, TargetFormat.Msi, TargetFormat.Deb)
 	  packageName = "InvoicerMxl"
-	  packageVersion = "2.0.0"
+	  packageVersion = "2.0.6"
 	  appResourcesRootDir.set(project.layout.projectDirectory.dir("src/appdata"))
+	  buildTypes.release.proguard {
+		configurationFiles.from(project.file("compose-desktop.pro"))
+	  }
 	}
   }
 }
